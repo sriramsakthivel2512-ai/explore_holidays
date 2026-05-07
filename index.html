@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,15 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Explore Holidays – Explore With World</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<!-- Firebase SDK -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, setDoc, serverTimestamp }
-    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // ── Firebase Config ──────────────────────────────────────────────────────
-  // REPLACE these values with your own Firebase project settings
-  const firebaseConfig = {
+<!-- ═══ FIREBASE ════════════════════════════════════════════════════════════
+     Replace the 6 YOUR_* values below with your Firebase project config.
+     Firebase Console → Project Settings → Your apps → SDK setup → Config
+     ════════════════════════════════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, getDoc, getDocs, addDoc, deleteDoc, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+   const firebaseConfig = {
   apiKey: "AIzaSyACGQHVjJVynB6pLm49FX4PMlB9ciPMywY",
   authDomain: "explore-e89f9.firebaseapp.com",
   projectId: "explore-e89f9",
@@ -23,90 +24,169 @@
   appId: "1:156219077458:web:c49bfef09b49bea92a808b",
   measurementId: "G-CFLCF8G7KV"
 };
-  // ────────────────────────────────────────────────────────────────────────
+let db = null;
+try { const app = initializeApp(firebaseConfig); db = getFirestore(app); }
+catch(e) { console.warn('Firebase init failed - check config values:', e.message); }
 
-  const app = initializeApp(firebaseConfig);
-  const db  = getFirestore(app);
-  window._db = db;
+window._db       = db;
+window._fbReady  = !!db;
+window._fbSave   = async (col,id,data) => { if(!db) throw new Error('Firebase not configured'); await setDoc(doc(db,col,id),{...data,_t:serverTimestamp()}); };
+window._fbGet    = async (col,id)      => { if(!db) return null; const s=await getDoc(doc(db,col,id)); return s.exists()?s.data():null; };
+window._fbGetAll = async (col)         => { if(!db) return []; const s=await getDocs(collection(db,col)); return s.docs.map(d=>({id:d.id,...d.data()})); };
+window._fbAdd    = async (col,data)    => { if(!db) return; return await addDoc(collection(db,col),{...data,_t:serverTimestamp()}); };
+window._fbDelete = async (col,id)      => { if(!db) return; await deleteDoc(doc(db,col,id)); };
 
-  // expose helpers on window so non-module scripts can use them
-  window._fbSave   = async (colName, id, data) => {
-    await setDoc(doc(db, colName, id), { ...data, updatedAt: serverTimestamp() });
-  };
-  window._fbAdd    = async (colName, data) => {
-    return await addDoc(collection(db, colName), { ...data, createdAt: serverTimestamp() });
-  };
-  window._fbDelete = async (colName, id) => {
-    await deleteDoc(doc(db, colName, id));
-  };
-  window._fbGetAll = async (colName) => {
-    const snap = await getDocs(collection(db, colName));
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  };
+/* ═══════════════════════════════════════════════════════════════════════════
+   AUTO-RESTORE — runs on every page load.
+   Reads all collections from Firestore → rebuilds every section in the DOM.
+   This is what makes admin changes survive Vercel refresh.
+   ═══════════════════════════════════════════════════════════════════════════ */
+window._fbLoad = async () => {
+  if (!db) return;
+  try {
 
-  // Load saved data into the website on startup
-  window._fbLoad = async () => {
-    try {
-      // ── Packages ──
-      const pkgs = await window._fbGetAll('packages');
-      pkgs.forEach(p => {
-        const cards = document.querySelectorAll('#packages .pkg-card');
-        cards.forEach(card => {
-          if (card.querySelector('.pkg-dest')?.textContent.trim() === p.title) {
-            if (p.badge)    card.querySelector('.pkg-badge').textContent    = p.badge;
-            if (p.includes) card.querySelector('.pkg-includes').textContent = p.includes;
-            if (p.imgSrc) {
-              let img = card.querySelector('img');
-              if (!img) { img = document.createElement('img'); img.style.cssText='width:100%;height:100%;object-fit:cover;'; card.querySelector('.pkg-img').prepend(img); }
-              img.src = p.imgSrc;
-            }
-          }
+    /* ── PACKAGES ── */
+    const pkgs = await window._fbGetAll('packages');
+    pkgs.sort((a,b)=>(a._order||0)-(b._order||0));
+    if (pkgs.length) {
+      const grid = document.querySelector('#packages .packages-grid');
+      if (grid) {
+        grid.innerHTML = '';
+        pkgs.forEach(p => {
+          const c = document.createElement('div');
+          c.className = 'pkg-card reveal visible';
+          c.innerHTML = `
+            <div class="pkg-img">
+              ${p.imgSrc ? `<img src="${p.imgSrc}" alt="${p.title||''}" style="width:100%;height:100%;object-fit:cover;transition:transform .4s;">` : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:60px;background:#f1f5f9;">🌍</div>`}
+              <div class="pkg-badge">${p.badge||''}</div>
+            </div>
+            <div class="pkg-body">
+              <div class="pkg-dest">${p.title||''}</div>
+              <div class="pkg-meta">${(p.tags||[]).map(t=>`<span class="pkg-tag">${t}</span>`).join('')}</div>
+              <div class="pkg-includes">${p.includes||''}</div>
+              <div class="pkg-footer"><button class="btn-book" onclick="bookPackage('${(p.title||'').replace(/'/g,"\\'")}')">Book Now</button></div>
+            </div>`;
+          grid.appendChild(c);
         });
-      });
-
-      // ── Honeymoon enquiries (new cards) ──
-      const honeys = await window._fbGetAll('honeymoon');
-      honeys.sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
-      honeys.forEach(h => {
-        if (!h.name) return;
-        const grid = document.querySelector('#honeymoon .honey-grid');
-        if (!grid) return;
-        const exists = [...grid.querySelectorAll('.honey-name')].some(n=>n.textContent===h.name);
-        if (exists) return;
-        const bgs=['bg1','bg2','bg3','bg4','bg5','bg6','bg7'];
-        const bg=bgs[Math.floor(Math.random()*bgs.length)];
-        const card = document.createElement('div');
-        card.className='honey-card reveal visible';
-        card.dataset.fbId = h.id;
-        card.innerHTML=`
-          <div class="honey-img ${bg}" style="${h.imgSrc?'font-size:0;position:relative;':''}">
-            ${h.imgSrc?`<img src="${h.imgSrc}" alt="${h.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">`:'💑'}
-            <div class="couple-badge">${h.badge||'Couple Special'}</div>
-          </div>
-          <div class="honey-body">
-            <div class="honey-name">${h.name}</div>
-            ${h.duration?`<div class="honey-duration" style="font-size:12px;color:var(--muted);margin-bottom:8px;">⏱ ${h.duration}</div>`:''}
-            <div class="honey-features">${[h.f1,h.f2,h.f3].filter(Boolean).map(f=>`<span class="hf">${f}</span>`).join('')}</div>
-            <button class="btn-book" style="margin-top:12px" onclick="bookPackage('${h.name} Honeymoon Package','')">Book Now</button>
-          </div>`;
-        grid.appendChild(card);
-      });
-
-      // ── Enquiries badge ──
-      const enqs = await window._fbGetAll('enquiries');
-      if (enqs.length > 0) {
-        const badge = document.getElementById('dbEnquiryCount');
-        if (badge) badge.textContent = enqs.length;
       }
-
-      console.log('✅ Firebase data loaded');
-    } catch(e) {
-      console.warn('Firebase load skipped (check config):', e.message);
     }
-  };
 
-  // Run after DOM ready
-  document.addEventListener('DOMContentLoaded', () => window._fbLoad && window._fbLoad());
+    /* ── TEMPLES ── */
+    const tpls = await window._fbGetAll('temples');
+    tpls.sort((a,b)=>(a._order||0)-(b._order||0));
+    if (tpls.length) {
+      const grid = document.querySelector('#temples .temples-grid');
+      if (grid) {
+        grid.innerHTML = '';
+        const bgs=['bg1','bg2','bg3','bg4','bg5','bg6','bg7'];
+        tpls.forEach((t,i) => {
+          const c = document.createElement('div');
+          c.className = 'temple-card reveal visible';
+          c.innerHTML = `
+            <div class="temple-img ${bgs[i%bgs.length]}" style="${t.imgSrc?'font-size:0;position:relative;':''}">
+              ${t.imgSrc ? `<img src="${t.imgSrc}" alt="${t.name||''}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">` : '🛕'}
+            </div>
+            <div class="temple-overlay">
+              <div class="temple-name">${t.name||''}</div>
+              <div class="temple-detail">${t.detail||''}</div>
+            </div>`;
+          grid.appendChild(c);
+        });
+      }
+    }
+
+    /* ── VEHICLES ── */
+    const vehs = await window._fbGetAll('vehicles');
+    vehs.sort((a,b)=>(a._order||0)-(b._order||0));
+    if (vehs.length) {
+      const grid = document.querySelector('#vehicles .vehicles-grid');
+      if (grid) {
+        grid.innerHTML = '';
+        vehs.forEach(v => {
+          const c = document.createElement('div');
+          c.className = 'vehicle-card reveal visible';
+          c.innerHTML = `
+            ${v.imgSrc ? `<img class="vehicle-photo" src="${v.imgSrc}" alt="${v.name||''}" style="width:100%;height:160px;object-fit:cover;display:block;">` : `<div class="vehicle-icon">${v.icon||'🚌'}</div>`}
+            <div class="vehicle-body">
+              <div class="vehicle-name">${v.name||''}</div>
+              <div class="vehicle-seats">${v.seats||''}</div>
+              <div class="vehicle-ac">${v.ac||''}</div>
+              ${v.price?`<div class="vehicle-price">${v.price}</div>`:''}
+              <a href="tel:8056444576" class="btn-call">📞 Call Now</a>
+            </div>`;
+          grid.appendChild(c);
+        });
+      }
+    }
+
+    /* ── HONEYMOON ── */
+    const honeys = await window._fbGetAll('honeymoon');
+    honeys.sort((a,b)=>(a._order||0)-(b._order||0));
+    if (honeys.length) {
+      const grid = document.querySelector('#honeymoon .honey-grid');
+      if (grid) {
+        grid.innerHTML = '';
+        const bgs=['bg1','bg2','bg3','bg4','bg5','bg6','bg7'];
+        honeys.forEach((h,i) => {
+          const c = document.createElement('div');
+          c.className = 'honey-card reveal visible';
+          c.innerHTML = `
+            <div class="honey-img ${bgs[i%bgs.length]}" style="${h.imgSrc?'font-size:0;position:relative;':''}">
+              ${h.imgSrc ? `<img src="${h.imgSrc}" alt="${h.name||''}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">` : '💑'}
+              <div class="couple-badge">${h.badge||'Couple Special'}</div>
+            </div>
+            <div class="honey-body">
+              <div class="honey-name">${h.name||''}</div>
+              ${h.duration?`<div style="font-size:12px;color:var(--muted);margin-bottom:8px;">⏱ ${h.duration}</div>`:''}
+              <div class="honey-features">${(h.features||[]).map(f=>`<span class="hf">${f}</span>`).join('')}</div>
+              <button class="btn-book" style="margin-top:12px" onclick="bookPackage('${(h.name||'').replace(/'/g,"\\'")} Honeymoon Package','')">Book Now</button>
+            </div>`;
+          grid.appendChild(c);
+        });
+      }
+    }
+
+    /* ── ANNIVERSARY ── */
+    const ann = await window._fbGet('anniversary','main');
+    if (ann) {
+      if (ann.sub) { const s=document.querySelector('#anniversary .sec-sub'); if(s) s.textContent=ann.sub; }
+      if (ann.tiers) {
+        const els=document.querySelectorAll('#anniversary .tier');
+        ann.tiers.forEach((t,i)=>{ const el=els[i]; if(!el) return;
+          if(el.querySelector('.t-name')) el.querySelector('.t-name').textContent=t.name||'';
+          if(el.querySelector('.t-desc')) el.querySelector('.t-desc').textContent=t.desc||'';
+          el.classList.toggle('featured',!!t.featured);
+        });
+      }
+      if (ann.feats) {
+        const els=document.querySelectorAll('#anniversary .ann-feat');
+        ann.feats.forEach((f,i)=>{ const el=els[i]; if(!el) return;
+          if(el.querySelector('.icon'))  el.querySelector('.icon').textContent=f.icon||'';
+          if(el.querySelector('.title')) el.querySelector('.title').textContent=f.title||'';
+          if(el.querySelector('.desc'))  el.querySelector('.desc').textContent=f.desc||'';
+        });
+      }
+    }
+
+    /* ── CONTACT ── */
+    const contact = await window._fbGet('settings','contact');
+    if (contact) {
+      if (contact.phone) document.querySelectorAll('a[href^="tel:"]').forEach(a=>{ a.href='tel:'+contact.phone; if(!a.querySelector('*')) a.textContent=contact.phone; });
+      if (contact.email) document.querySelectorAll('a[href^="mailto:"]').forEach(a=>{ a.href='mailto:'+contact.email; if(!a.querySelector('*')) a.textContent=contact.email; });
+      if (contact.wa)    document.querySelectorAll('a[href^="https://wa.me/"]').forEach(a=>{ a.href='https://wa.me/'+contact.wa; });
+    }
+
+    console.log('✅ Firebase restore complete');
+  } catch(e) {
+    console.warn('Firebase restore skipped:', e.message);
+  }
+};
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', window._fbLoad);
+} else {
+  window._fbLoad();
+}
 </script>
 <style>
 :root {
@@ -1691,84 +1771,63 @@ footer {
 
       <!-- ═══ DATABASE TAB ═══ -->
       <div class="admin-section" id="tab-dbpanel">
-        <h3>📊 Firebase Database Manager</h3>
-        <p style="color:var(--muted);font-size:13px;margin-bottom:18px;">
-          Save all website content to Firebase Firestore. Once saved, data is restored automatically on every page load.<br>
-          <strong style="color:#e11d48;">First-time setup:</strong> Replace <code>YOUR_API_KEY</code> etc. in the Firebase config (inside the <code>&lt;script type="module"&gt;</code> block in the HTML head).
-        </p>
+        <h3>📊 Firebase Database</h3>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Every section now <strong>auto-saves to Firestore</strong> whenever you click a Save button — so changes survive page refresh on Vercel. Use the buttons below to manually force-save or view enquiries.</p>
 
-        <!-- STATUS -->
-        <div id="dbStatus" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:#166534;">
-          ⏳ Checking Firebase connection…
+        <div id="dbStatus" style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 18px;color:#166534;font-size:13px;margin-bottom:20px;">⏳ Checking Firebase connection…</div>
+
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:20px;">
+          <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;">
+            <div style="font-weight:700;color:var(--navy);margin-bottom:4px;">📦 Tour Packages</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Force-save package section</div>
+            <button class="admin-save-btn" style="width:100%;margin:0;font-size:13px;" onclick="persistPackages()">💾 Save Packages</button>
+          </div>
+          <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;">
+            <div style="font-weight:700;color:var(--navy);margin-bottom:4px;">🛕 Temple Tours</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Force-save temple section</div>
+            <button class="admin-save-btn" style="width:100%;margin:0;font-size:13px;" onclick="persistTemples()">💾 Save Temples</button>
+          </div>
+          <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;">
+            <div style="font-weight:700;color:var(--navy);margin-bottom:4px;">🎊 Anniversary</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Force-save anniversary section</div>
+            <button class="admin-save-btn" style="width:100%;margin:0;font-size:13px;" onclick="persistAnniversary()">💾 Save Anniversary</button>
+          </div>
+          <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;">
+            <div style="font-weight:700;color:var(--navy);margin-bottom:4px;">🚌 Vehicles</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Force-save vehicle section</div>
+            <button class="admin-save-btn" style="width:100%;margin:0;font-size:13px;" onclick="persistVehicles()">💾 Save Vehicles</button>
+          </div>
+          <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;">
+            <div style="font-weight:700;color:var(--navy);margin-bottom:4px;">💑 Honeymoon</div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Force-save honeymoon section</div>
+            <button class="admin-save-btn" style="width:100%;margin:0;font-size:13px;" onclick="persistHoneymoon()">💾 Save Honeymoon</button>
+          </div>
+          <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:16px;">
+            <div style="font-weight:700;color:var(--navy);margin-bottom:4px;">💬 Enquiries <span id="dbEnquiryCount" style="background:#ec4899;color:#fff;font-size:10px;padding:2px 8px;border-radius:20px;"></span></div>
+            <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">View all submitted enquiries</div>
+            <button class="admin-save-btn" style="width:100%;margin:0;font-size:13px;" onclick="dbViewEnquiries()">📋 View Enquiries</button>
+            <button style="width:100%;margin-top:8px;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;padding:7px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;" onclick="dbClearEnquiries()">🗑️ Clear All</button>
+          </div>
         </div>
 
-        <!-- SECTION BUTTONS -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:24px;">
-
-          <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:18px;">
-            <div style="font-weight:700;color:var(--navy);margin-bottom:6px;">📦 Tour Packages</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Save all package cards to DB</div>
-            <button class="admin-save-btn" style="width:100%;margin:0;" onclick="dbSavePackages()">💾 Save Packages</button>
-            <button style="width:100%;margin-top:8px;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;padding:7px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;" onclick="dbLoadPackages()">⬇️ Load from DB</button>
-          </div>
-
-          <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:18px;">
-            <div style="font-weight:700;color:var(--navy);margin-bottom:6px;">🛕 Temple Tours</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Save all temple cards to DB</div>
-            <button class="admin-save-btn" style="width:100%;margin:0;" onclick="dbSaveTemples()">💾 Save Temples</button>
-            <button style="width:100%;margin-top:8px;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;padding:7px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;" onclick="dbLoadTemples()">⬇️ Load from DB</button>
-          </div>
-
-          <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:18px;">
-            <div style="font-weight:700;color:var(--navy);margin-bottom:6px;">🎊 60th Anniversary</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Save anniversary package tiers</div>
-            <button class="admin-save-btn" style="width:100%;margin:0;" onclick="dbSaveAnniversary()">💾 Save Anniversary</button>
-            <button style="width:100%;margin-top:8px;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;padding:7px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;" onclick="dbLoadAnniversary()">⬇️ Load from DB</button>
-          </div>
-
-          <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:18px;">
-            <div style="font-weight:700;color:var(--navy);margin-bottom:6px;">🚌 Vehicle Rental</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Save all vehicle cards to DB</div>
-            <button class="admin-save-btn" style="width:100%;margin:0;" onclick="dbSaveVehicles()">💾 Save Vehicles</button>
-            <button style="width:100%;margin-top:8px;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;padding:7px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;" onclick="dbLoadVehicles()">⬇️ Load from DB</button>
-          </div>
-
-          <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:18px;">
-            <div style="font-weight:700;color:var(--navy);margin-bottom:6px;">💑 Honeymoon</div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Save all honeymoon cards to DB</div>
-            <button class="admin-save-btn" style="width:100%;margin:0;" onclick="dbSaveHoneymoon()">💾 Save Honeymoon</button>
-            <button style="width:100%;margin-top:8px;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;padding:7px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;" onclick="dbLoadHoneymoon()">⬇️ Load from DB</button>
-          </div>
-
-          <div style="background:#fff;border:1.5px solid var(--border);border-radius:12px;padding:18px;">
-            <div style="font-weight:700;color:var(--navy);margin-bottom:6px;">💬 Enquiries <span id="dbEnquiryCount" style="background:#ec4899;color:#fff;font-size:10px;padding:2px 8px;border-radius:20px;vertical-align:middle;"></span></div>
-            <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">View all form enquiries</div>
-            <button class="admin-save-btn" style="width:100%;margin:0;" onclick="dbViewEnquiries()">📋 View All Enquiries</button>
-            <button style="width:100%;margin-top:8px;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;padding:7px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;" onclick="dbClearEnquiries()">🗑️ Clear Enquiries</button>
-          </div>
-
-        </div>
-
-        <!-- SAVE ALL -->
-        <button class="admin-save-btn" style="width:100%;padding:15px;font-size:15px;" onclick="dbSaveAll()">🚀 Save ALL Sections to Database</button>
+        <button class="admin-save-btn" style="width:100%;padding:14px;font-size:15px;margin-bottom:8px;" onclick="dbSaveAll()">🚀 Force-Save ALL Sections to Firebase</button>
         <div class="admin-msg" id="dbMsg"></div>
 
-        <!-- ENQUIRIES TABLE -->
-        <div id="dbEnquiriesTable" style="margin-top:24px;display:none;">
-          <h4 style="color:var(--navy);margin-bottom:12px;">📋 Submitted Enquiries</h4>
-          <div id="dbEnquiriesList" style="overflow-x:auto;"></div>
+        <div id="dbEnquiriesTable" style="margin-top:20px;display:none;">
+          <h4 style="color:var(--navy);margin-bottom:12px;">📋 Enquiries from Website</h4>
+          <div id="dbEnquiriesList"></div>
         </div>
 
-        <!-- SETUP GUIDE -->
-        <div style="margin-top:28px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:18px;">
-          <div style="font-weight:700;color:#92400e;margin-bottom:10px;">🔧 Quick Firebase Setup Guide</div>
-          <ol style="color:#78350f;font-size:13px;line-height:2;padding-left:20px;">
-            <li>Go to <strong>console.firebase.google.com</strong> → Create a new project</li>
-            <li>Click <strong>Firestore Database</strong> → Create database (start in test mode)</li>
-            <li>Click <strong>Project Settings</strong> → Register a web app → Copy the config</li>
-            <li>Open this HTML file → Find <code>const firebaseConfig = {…}</code> → Paste your values</li>
-            <li>Open this admin panel → Click <strong>🚀 Save ALL Sections to Database</strong></li>
-            <li>Data now auto-loads on every page visit ✅</li>
+        <div style="margin-top:24px;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:18px;">
+          <div style="font-weight:700;color:#92400e;margin-bottom:10px;">🔧 One-Time Firebase Setup</div>
+          <ol style="color:#78350f;font-size:13px;line-height:2.2;padding-left:18px;">
+            <li>Go to <strong>console.firebase.google.com</strong> → Create project (free)</li>
+            <li>Click <strong>Firestore Database</strong> → Create → Start in <em>test mode</em></li>
+            <li>Click <strong>Project Settings ⚙️</strong> → Your apps → Web app → Copy config</li>
+            <li>Open this <code>.html</code> file → Find <code>const firebaseConfig = {…}</code> near the top → Paste your values</li>
+            <li>Re-deploy to Vercel → open admin → this tab will show ✅ connected</li>
+            <li>Click <strong>🚀 Force-Save ALL</strong> once to push current content to DB</li>
+            <li>From now on, every Save button in admin auto-persists to Firestore ✅</li>
           </ol>
         </div>
       </div>
@@ -1816,12 +1875,11 @@ function sendEnquiry() {
   const msg       = document.getElementById('eMsg').value.trim() || '-';
   const wa = `Hello Explore Holidays! 🙏\n\n📋 *New Enquiry*\n\n👤 Name: ${name}\n📞 WhatsApp: ${phone}\n📍 From: ${from}\n🎯 Destination: ${dest}\n📅 Start Date: ${start}\n🔙 Return Date: ${end}\n📧 Email: ${email}\n👥 Travellers: ${travellers}\n💬 Message: ${msg}\n\nPlease help me plan this trip. Thank you!`;
   window.open(`https://wa.me/918056444576?text=${encodeURIComponent(wa)}`, '_blank');
-  // Save to Firebase DB
-  dbSaveEnquiry({ name, phone, from, dest, start, end, email, travellers, message: msg });
-  // Clear form after sending
+  // Save enquiry to Firestore
+  dbSaveEnquiry({ name, phone, from, dest, start, return: end, email, travellers, message: msg });
+  // Clear form fields after sending
   ['eName','ePhone','eFrom','eDest','eStart','eEnd','eEmail','eTravellers','eMsg'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
+    const el = document.getElementById(id); if(el) el.value = '';
   });
 }
 window.addEventListener('scroll', () => {
@@ -1880,7 +1938,7 @@ function switchTab(tab, btn) {
   document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('tab-' + tab).classList.add('active');
-  if (tab === 'dbpanel') dbCheckStatus();
+  if (tab === 'dbpanel') setTimeout(dbCheckStatus, 100);
 }
 
 // ══════════════════════════════════════════
@@ -2584,125 +2642,88 @@ function addHoneymoonCard() {
   loadHoneymoonEditor();
 }
 
-// ══════════════════════════════════════════
-//  DATABASE (FIREBASE) FUNCTIONS
-// ══════════════════════════════════════════
+// ── Utility ──
 
-/* ── Check Firebase connection ── */
-async function dbCheckStatus() {
-  const el = document.getElementById('dbStatus');
-  if (!el) return;
-  if (!window._fbGetAll) {
-    el.style.background='#fef2f2'; el.style.borderColor='#fecaca'; el.style.color='#991b1b';
-    el.innerHTML = '❌ Firebase not configured. Replace <code>YOUR_API_KEY</code> values in the HTML &lt;head&gt; script.';
-    return;
-  }
-  try {
-    await window._fbGetAll('_ping');
-    el.style.background='#f0fdf4'; el.style.borderColor='#bbf7d0'; el.style.color='#166534';
-    el.innerHTML = '✅ Firebase connected successfully! You can save and load data.';
-  } catch(e) {
-    el.style.background='#fef2f2'; el.style.borderColor='#fecaca'; el.style.color='#991b1b';
-    el.innerHTML = '❌ Firebase error: ' + e.message + '. Check your config values.';
-  }
-}
+// ══════════════════════════════════════════════════════════════════════════
+//  AUTO-PERSIST WRAPPERS
+//  These replace the original save functions so every change is immediately
+//  written to Firestore — making changes survive page refresh on Vercel.
+// ══════════════════════════════════════════════════════════════════════════
 
-/* ── Save All Sections ── */
-async function dbSaveAll() {
-  showMsg('dbMsg','⏳ Saving all sections to Firebase…','success');
-  await dbSavePackages(true);
-  await dbSaveTemples(true);
-  await dbSaveAnniversary(true);
-  await dbSaveVehicles(true);
-  await dbSaveHoneymoon(true);
-  showMsg('dbMsg','✅ All sections saved to Firebase successfully!','success');
-}
-
-/* ── PACKAGES ── */
-async function dbSavePackages(silent) {
-  if (!window._fbSave) { if(!silent) showMsg('dbMsg','❌ Firebase not configured','error'); return; }
+/* ── collect current DOM state → Firestore ── */
+async function persistPackages() {
+  if (!window._fbSave) return;
   const cards = document.querySelectorAll('#packages .pkg-card');
   const saves = [];
-  cards.forEach((card, i) => {
-    const data = {
+  cards.forEach((card,i) => {
+    saves.push(window._fbSave('packages','pkg_'+i,{
       title:    card.querySelector('.pkg-dest')?.textContent.trim()||'',
       badge:    card.querySelector('.pkg-badge')?.textContent.trim()||'',
       includes: card.querySelector('.pkg-includes')?.textContent.trim()||'',
       tags:     [...card.querySelectorAll('.pkg-tag')].map(t=>t.textContent.trim()),
-      imgSrc:   card.querySelector('img')?.src || '',
-      order: i
-    };
-    saves.push(window._fbSave('packages', 'pkg_'+i, data));
-  });
-  try { await Promise.all(saves); if(!silent) showMsg('dbMsg','✅ Packages saved to Firebase!','success'); }
-  catch(e) { if(!silent) showMsg('dbMsg','❌ Error: '+e.message,'error'); }
-}
-
-async function dbLoadPackages() {
-  if (!window._fbGetAll) { showMsg('dbMsg','❌ Firebase not configured','error'); return; }
-  try {
-    const data = await window._fbGetAll('packages');
-    data.sort((a,b)=>(a.order||0)-(b.order||0));
-    const cards = document.querySelectorAll('#packages .pkg-card');
-    data.forEach((p,i) => {
-      const card = cards[i]; if(!card) return;
-      if(p.badge)    card.querySelector('.pkg-badge').textContent=p.badge;
-      if(p.includes) card.querySelector('.pkg-includes').textContent=p.includes;
-      if(p.title)    card.querySelector('.pkg-dest').textContent=p.title;
-      if(p.tags)     card.querySelectorAll('.pkg-tag').forEach((t,ti)=>{ if(p.tags[ti]) t.textContent=p.tags[ti]; });
-      if(p.imgSrc) {
-        let img=card.querySelector('img');
-        if(!img){img=document.createElement('img');img.style.cssText='width:100%;height:100%;object-fit:cover;';card.querySelector('.pkg-img').prepend(img);}
-        img.src=p.imgSrc;
-      }
-    });
-    showMsg('dbMsg','✅ Packages loaded from Firebase!','success');
-    loadPackageEditor();
-  } catch(e) { showMsg('dbMsg','❌ Error: '+e.message,'error'); }
-}
-
-/* ── TEMPLES ── */
-async function dbSaveTemples(silent) {
-  if (!window._fbSave) { if(!silent) showMsg('dbMsg','❌ Firebase not configured','error'); return; }
-  const cards = document.querySelectorAll('#temples .temple-card');
-  const saves = [];
-  cards.forEach((card, i) => {
-    const imgEl = card.querySelector('img');
-    saves.push(window._fbSave('temples', 'temple_'+i, {
-      name:   card.querySelector('.temple-name')?.textContent.trim()||'',
-      detail: card.querySelector('.temple-detail')?.textContent.trim()||'',
-      imgSrc: imgEl ? imgEl.src : '',
-      order: i
+      imgSrc:   card.querySelector('img')?.src||'',
+      _order: i
     }));
   });
-  try { await Promise.all(saves); if(!silent) showMsg('dbMsg','✅ Temple Tours saved to Firebase!','success'); }
-  catch(e) { if(!silent) showMsg('dbMsg','❌ Error: '+e.message,'error'); }
+  try { await Promise.all(saves); showMsg('pkgMsg','✅ Saved to database — changes will persist after refresh!','success'); }
+  catch(e) { console.warn('DB persist packages:',e.message); }
 }
 
-async function dbLoadTemples() {
-  if (!window._fbGetAll) { showMsg('dbMsg','❌ Firebase not configured','error'); return; }
-  try {
-    const data = await window._fbGetAll('temples');
-    data.sort((a,b)=>(a.order||0)-(b.order||0));
-    const cards = document.querySelectorAll('#temples .temple-card');
-    data.forEach((t,i)=>{
-      const card=cards[i]; if(!card) return;
-      if(t.name)   card.querySelector('.temple-name').textContent=t.name;
-      if(t.detail) card.querySelector('.temple-detail').textContent=t.detail;
-      if(t.imgSrc) {
-        let img=card.querySelector('img');
-        if(!img){img=document.createElement('img');img.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;inset:0;';card.querySelector('.temple-img').prepend(img);}
-        img.src=t.imgSrc; card.querySelector('.temple-img').style.fontSize='0';
-      }
-    });
-    showMsg('dbMsg','✅ Temple Tours loaded from Firebase!','success');
-    loadTempleEditor();
-  } catch(e) { showMsg('dbMsg','❌ Error: '+e.message,'error'); }
+async function persistTemples() {
+  if (!window._fbSave) return;
+  const cards = document.querySelectorAll('#temples .temple-card');
+  const saves = [];
+  cards.forEach((card,i) => {
+    saves.push(window._fbSave('temples','temple_'+i,{
+      name:   card.querySelector('.temple-name')?.textContent.trim()||'',
+      detail: card.querySelector('.temple-detail')?.textContent.trim()||'',
+      imgSrc: card.querySelector('img')?.src||'',
+      _order: i
+    }));
+  });
+  try { await Promise.all(saves); showMsg('templeMsg','✅ Saved to database — changes will persist after refresh!','success'); }
+  catch(e) { console.warn('DB persist temples:',e.message); }
 }
 
-/* ── ANNIVERSARY ── */
-async function dbSaveAnniversary(silent) {
-  if (!window._fbSave) { if(!silent) showMsg('dbMsg','❌ Firebase not configured','error'); return; }
+async function persistVehicles() {
+  if (!window._fbSave) return;
+  const cards = document.querySelectorAll('#vehicles .vehicle-card');
+  const saves = [];
+  cards.forEach((card,i) => {
+    saves.push(window._fbSave('vehicles','vehicle_'+i,{
+      name:   card.querySelector('.vehicle-name')?.textContent||'',
+      seats:  card.querySelector('.vehicle-seats')?.textContent||'',
+      ac:     card.querySelector('.vehicle-ac')?.textContent||'',
+      price:  card.querySelector('.vehicle-price')?.textContent||'',
+      icon:   card.querySelector('.vehicle-icon')?.textContent||'🚌',
+      imgSrc: card.querySelector('.vehicle-photo')?.src||'',
+      _order: i
+    }));
+  });
+  try { await Promise.all(saves); showMsg('vehMsg','✅ Saved to database — changes will persist after refresh!','success'); }
+  catch(e) { console.warn('DB persist vehicles:',e.message); }
+}
+
+async function persistHoneymoon() {
+  if (!window._fbSave) return;
+  const cards = document.querySelectorAll('#honeymoon .honey-card');
+  const saves = [];
+  cards.forEach((card,i) => {
+    saves.push(window._fbSave('honeymoon','honey_'+i,{
+      name:     card.querySelector('.honey-name')?.textContent.trim()||'',
+      badge:    card.querySelector('.couple-badge')?.textContent.trim()||'',
+      duration: card.querySelector('.honey-duration')?.textContent.replace('⏱','').trim()||'',
+      features: [...card.querySelectorAll('.hf')].map(f=>f.textContent.trim()),
+      imgSrc:   card.querySelector('.honey-img img')?.src||'',
+      _order: i
+    }));
+  });
+  try { await Promise.all(saves); showMsg('honeyMsg','✅ Saved to database — changes will persist after refresh!','success'); }
+  catch(e) { console.warn('DB persist honeymoon:',e.message); }
+}
+
+async function persistAnniversary() {
+  if (!window._fbSave) return;
   const tiers = [...document.querySelectorAll('#anniversary .tier')].map(t=>({
     name: t.querySelector('.t-name')?.textContent||'',
     desc: t.querySelector('.t-desc')?.textContent||'',
@@ -2713,179 +2734,145 @@ async function dbSaveAnniversary(silent) {
     title: f.querySelector('.title')?.textContent||'',
     desc:  f.querySelector('.desc')?.textContent||''
   }));
-  const title = document.querySelector('#anniversary .sec-title')?.innerText||'';
-  const sub   = document.querySelector('#anniversary .sec-sub')?.textContent||'';
+  const sub = document.querySelector('#anniversary .sec-sub')?.textContent||'';
   try {
-    await window._fbSave('anniversary','main',{ title, sub, tiers, feats });
-    if(!silent) showMsg('dbMsg','✅ Anniversary saved to Firebase!','success');
-  } catch(e) { if(!silent) showMsg('dbMsg','❌ Error: '+e.message,'error'); }
+    await window._fbSave('anniversary','main',{ sub, tiers, feats });
+    showMsg('annMsg','✅ Saved to database — changes will persist after refresh!','success');
+  } catch(e) { console.warn('DB persist anniversary:',e.message); }
 }
 
-async function dbLoadAnniversary() {
-  if (!window._fbGetAll) { showMsg('dbMsg','❌ Firebase not configured','error'); return; }
+async function persistContact() {
+  if (!window._fbSave) return;
+  const phone = document.getElementById('adPhone')?.value||'';
+  const email = document.getElementById('adEmail')?.value||'';
+  const wa    = document.getElementById('adWA')?.value||'';
   try {
-    const data = await window._fbGetAll('anniversary');
-    const main = data.find(d=>d.id==='main');
-    if(!main) { showMsg('dbMsg','⚠️ No anniversary data in DB yet','error'); return; }
-    if(main.sub) { const s=document.querySelector('#anniversary .sec-sub'); if(s) s.textContent=main.sub; }
-    if(main.tiers) {
-      const tierEls=document.querySelectorAll('#anniversary .tier');
-      main.tiers.forEach((t,i)=>{
-        const el=tierEls[i]; if(!el) return;
-        if(el.querySelector('.t-name')) el.querySelector('.t-name').textContent=t.name;
-        if(el.querySelector('.t-desc')) el.querySelector('.t-desc').textContent=t.desc;
-        el.classList.toggle('featured',!!t.featured);
-      });
-    }
-    showMsg('dbMsg','✅ Anniversary loaded from Firebase!','success');
-    loadAnniversaryEditor();
-  } catch(e) { showMsg('dbMsg','❌ Error: '+e.message,'error'); }
+    await window._fbSave('settings','contact',{ phone, email, wa });
+    showMsg('contactMsg','✅ Saved to database — changes will persist after refresh!','success');
+  } catch(e) { console.warn('DB persist contact:',e.message); }
 }
 
-/* ── VEHICLES ── */
-async function dbSaveVehicles(silent) {
-  if (!window._fbSave) { if(!silent) showMsg('dbMsg','❌ Firebase not configured','error'); return; }
-  const cards = document.querySelectorAll('#vehicles .vehicle-card');
-  const saves=[];
-  cards.forEach((card,i)=>{
-    saves.push(window._fbSave('vehicles','vehicle_'+i,{
-      name:  card.querySelector('.vehicle-name')?.textContent||'',
-      seats: card.querySelector('.vehicle-seats')?.textContent||'',
-      ac:    card.querySelector('.vehicle-ac')?.textContent||'',
-      price: card.querySelector('.vehicle-price')?.textContent||'',
-      icon:  card.querySelector('.vehicle-icon')?.textContent||'🚌',
-      imgSrc: card.querySelector('.vehicle-photo')?.src||'',
-      order: i
-    }));
-  });
-  try { await Promise.all(saves); if(!silent) showMsg('dbMsg','✅ Vehicles saved to Firebase!','success'); }
-  catch(e) { if(!silent) showMsg('dbMsg','❌ Error: '+e.message,'error'); }
-}
+/* ── Override original save functions to also persist ── */
+const _origSavePackages   = savePackages;
+const _origSaveTemples    = saveTemples;
+const _origSaveVehicles   = saveVehicles;
+const _origSaveAnniversary= saveAnniversary;
+const _origSaveContact    = saveContact;
+const _origSaveHoneymoon  = saveHoneymoon;
 
-async function dbLoadVehicles() {
-  if (!window._fbGetAll) { showMsg('dbMsg','❌ Firebase not configured','error'); return; }
-  try {
-    const data = await window._fbGetAll('vehicles');
-    data.sort((a,b)=>(a.order||0)-(b.order||0));
-    const cards=document.querySelectorAll('#vehicles .vehicle-card');
-    data.forEach((v,i)=>{
-      const card=cards[i]; if(!card) return;
-      if(v.name)  card.querySelector('.vehicle-name').textContent=v.name;
-      if(v.seats) card.querySelector('.vehicle-seats').textContent=v.seats;
-      if(v.ac)    card.querySelector('.vehicle-ac').textContent=v.ac;
-      if(v.icon)  card.querySelector('.vehicle-icon').textContent=v.icon;
-      if(v.price){let pe=card.querySelector('.vehicle-price');if(!pe){pe=document.createElement('div');pe.className='vehicle-price';card.querySelector('.vehicle-body').insertBefore(pe,card.querySelector('.btn-call'));}pe.textContent=v.price;}
-      if(v.imgSrc){let img=card.querySelector('.vehicle-photo');const ic=card.querySelector('.vehicle-icon');if(!img){img=document.createElement('img');img.className='vehicle-photo';img.style.cssText='width:100%;height:160px;object-fit:cover;display:block;';if(ic)ic.style.display='none';card.insertBefore(img,card.firstChild);}img.src=v.imgSrc;}
-    });
-    showMsg('dbMsg','✅ Vehicles loaded from Firebase!','success');
-    loadVehicleEditor();
-  } catch(e) { showMsg('dbMsg','❌ Error: '+e.message,'error'); }
-}
+savePackages    = function() { _origSavePackages();    setTimeout(persistPackages,   300); };
+saveTemples     = function() { _origSaveTemples();     setTimeout(persistTemples,    300); };
+saveVehicles    = function() { _origSaveVehicles();    setTimeout(persistVehicles,   300); };
+saveAnniversary = function() { _origSaveAnniversary(); setTimeout(persistAnniversary,300); };
+saveContact     = function() { _origSaveContact();     setTimeout(persistContact,    300); };
+saveHoneymoon   = function() { _origSaveHoneymoon();   setTimeout(persistHoneymoon,  300); };
 
-/* ── HONEYMOON ── */
-async function dbSaveHoneymoon(silent) {
-  if (!window._fbSave) { if(!silent) showMsg('dbMsg','❌ Firebase not configured','error'); return; }
-  const cards=document.querySelectorAll('#honeymoon .honey-card');
-  const saves=[];
-  cards.forEach((card,i)=>{
-    saves.push(window._fbSave('honeymoon','honey_'+i,{
-      name:     card.querySelector('.honey-name')?.textContent.trim()||'',
-      badge:    card.querySelector('.couple-badge')?.textContent.trim()||'',
-      duration: card.querySelector('.honey-duration')?.textContent.replace('⏱','').trim()||'',
-      features: [...card.querySelectorAll('.hf')].map(f=>f.textContent.trim()),
-      imgSrc:   card.querySelector('.honey-img img')?.src||'',
-      order: i
-    }));
-  });
-  try { await Promise.all(saves); if(!silent) showMsg('dbMsg','✅ Honeymoon packages saved to Firebase!','success'); }
-  catch(e) { if(!silent) showMsg('dbMsg','❌ Error: '+e.message,'error'); }
-}
+/* Also persist after add/remove actions */
+const _origAddNewPackage    = addNewPackage;
+const _origAddNewTemple     = addNewTemple;
+const _origAddNewVehicle    = addNewVehicle;
+const _origAddHoneymoonCard = addHoneymoonCard;
+const _origRemovePackage    = removePackage;
+const _origRemoveTemple     = removeTemple;
+const _origRemoveVehicle    = removeVehicle;
+const _origDeleteHoneymoon  = deleteHoneymoonCard;
 
-async function dbLoadHoneymoon() {
-  if (!window._fbGetAll) { showMsg('dbMsg','❌ Firebase not configured','error'); return; }
-  try {
-    const data = await window._fbGetAll('honeymoon');
-    data.sort((a,b)=>(a.order||0)-(b.order||0));
-    const grid=document.querySelector('#honeymoon .honey-grid');
-    // Clear added-from-db cards, keep original HTML ones
-    grid.querySelectorAll('[data-fb-id]').forEach(c=>c.remove());
-    data.forEach((h,i)=>{
-      const existing=[...grid.querySelectorAll('.honey-name')].find(n=>n.textContent.trim()===h.name);
-      if(existing){
-        const card=existing.closest('.honey-card');
-        if(h.badge&&card.querySelector('.couple-badge')) card.querySelector('.couple-badge').textContent=h.badge;
-        if(h.features&&h.features.length){const ft=card.querySelector('.honey-features');if(ft)ft.innerHTML=h.features.map(f=>`<span class="hf">${f}</span>`).join('');}
-        if(h.imgSrc){let img=card.querySelector('.honey-img img');if(!img){img=document.createElement('img');img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';card.querySelector('.honey-img').style.fontSize='0';card.querySelector('.honey-img').style.position='relative';card.querySelector('.honey-img').insertBefore(img,card.querySelector('.honey-img').firstChild);}img.src=h.imgSrc;}
-      }
-    });
-    showMsg('dbMsg','✅ Honeymoon loaded from Firebase!','success');
-    loadHoneymoonEditor();
-  } catch(e) { showMsg('dbMsg','❌ Error: '+e.message,'error'); }
-}
+addNewPackage    = function() { _origAddNewPackage();    setTimeout(persistPackages,  400); };
+addNewTemple     = function() { _origAddNewTemple();     setTimeout(persistTemples,   400); };
+addNewVehicle    = function() { _origAddNewVehicle();    setTimeout(persistVehicles,  400); };
+addHoneymoonCard = function() { _origAddHoneymoonCard(); setTimeout(persistHoneymoon, 400); };
+removePackage    = function(btn) { _origRemovePackage(btn);   setTimeout(persistPackages,  400); };
+removeTemple     = function(btn) { _origRemoveTemple(btn);    setTimeout(persistTemples,   400); };
+removeVehicle    = function(btn) { _origRemoveVehicle(btn);   setTimeout(persistVehicles,  400); };
+deleteHoneymoonCard = function(btn) { _origDeleteHoneymoon(btn); setTimeout(persistHoneymoon, 400); };
 
-/* ── ENQUIRIES ── */
+/* ── Enquiry → save to Firestore ── */
 async function dbSaveEnquiry(data) {
-  if (!window._fbAdd) return; // silently skip if not configured
+  try { await window._fbAdd('enquiries', data); }
+  catch(e) { console.warn('Enquiry save:', e.message); }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   DB ADMIN TAB FUNCTIONS
+   ══════════════════════════════════════════════════════════════════════════ */
+async function dbCheckStatus() {
+  const el = document.getElementById('dbStatus');
+  if (!el) return;
+  if (!window._fbReady) {
+    el.style.cssText='background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:14px 18px;color:#991b1b;font-size:13px;margin-bottom:20px;';
+    el.innerHTML='❌ <strong>Firebase not configured.</strong> Open the HTML file and replace <code>YOUR_API_KEY</code>, <code>YOUR_PROJECT_ID</code> etc. in the &lt;script type="module"&gt; block at the top.'; return;
+  }
   try {
-    await window._fbAdd('enquiries', data);
-    // update badge
-    const enqs = await window._fbGetAll('enquiries');
-    const badge = document.getElementById('dbEnquiryCount');
-    if (badge) badge.textContent = enqs.length;
-  } catch(e) { console.warn('Enquiry save failed:', e.message); }
+    await window._fbGetAll('_ping');
+    el.style.cssText='background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px 18px;color:#166534;font-size:13px;margin-bottom:20px;';
+    el.innerHTML='✅ <strong>Firebase connected!</strong> Every admin save now automatically persists to Firestore — your changes will survive page refresh on Vercel.';
+  } catch(e) {
+    el.style.cssText='background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:14px 18px;color:#991b1b;font-size:13px;margin-bottom:20px;';
+    el.innerHTML='❌ Firebase error: ' + e.message;
+  }
+}
+
+async function dbSaveAll() {
+  showMsg('dbMsg','⏳ Saving all sections to Firestore…','success');
+  await persistPackages();
+  await persistTemples();
+  await persistVehicles();
+  await persistHoneymoon();
+  await persistAnniversary();
+  await persistContact();
+  showMsg('dbMsg','✅ All sections saved! Changes will now persist on Vercel after refresh.','success');
 }
 
 async function dbViewEnquiries() {
   if (!window._fbGetAll) { showMsg('dbMsg','❌ Firebase not configured','error'); return; }
   const tableDiv = document.getElementById('dbEnquiriesTable');
   const listDiv  = document.getElementById('dbEnquiriesList');
-  tableDiv.style.display='block';
-  listDiv.innerHTML='<p style="color:var(--muted);font-size:13px;">⏳ Loading enquiries…</p>';
+  tableDiv.style.display = 'block';
+  listDiv.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:12px;">⏳ Loading…</p>';
   try {
     const enqs = await window._fbGetAll('enquiries');
-    if(enqs.length===0){ listDiv.innerHTML='<p style="color:var(--muted);font-size:13px;">No enquiries yet.</p>'; return; }
-    enqs.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-    let html='<table style="width:100%;border-collapse:collapse;font-size:12px;">';
-    html+='<thead><tr style="background:var(--navy);color:#fff;">';
-    ['#','Name','Phone','From','To','Date','Travellers','Message','Received'].forEach(h=>{
-      html+=`<th style="padding:8px 10px;text-align:left;white-space:nowrap;">${h}</th>`;
+    if (!enqs.length) { listDiv.innerHTML='<p style="color:var(--muted);font-size:13px;padding:12px;">No enquiries yet.</p>'; return; }
+    enqs.sort((a,b)=>(b._t?.seconds||0)-(a._t?.seconds||0));
+    let html = '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;">';
+    html += '<thead><tr style="background:var(--navy);color:#fff;">';
+    ['#','Name','Phone','From','Destination','Start','Return','Email','Travellers','Message','Received'].forEach(h=>{
+      html += `<th style="padding:8px 10px;text-align:left;white-space:nowrap;">${h}</th>`;
     });
-    html+='</tr></thead><tbody>';
+    html += '</tr></thead><tbody>';
     enqs.forEach((e,i)=>{
-      const ts = e.createdAt?.seconds ? new Date(e.createdAt.seconds*1000).toLocaleDateString('en-IN') : '-';
-      html+=`<tr style="border-bottom:1px solid var(--border);${i%2===0?'background:#f8f9fc':''}">
+      const ts = e._t?.seconds ? new Date(e._t.seconds*1000).toLocaleDateString('en-IN') : '-';
+      html += `<tr style="border-bottom:1px solid var(--border);background:${i%2?'#fff':'#f8f9fc'}">
         <td style="padding:7px 10px;color:var(--muted);">${i+1}</td>
         <td style="padding:7px 10px;font-weight:600;">${e.name||'-'}</td>
         <td style="padding:7px 10px;">${e.phone||'-'}</td>
         <td style="padding:7px 10px;">${e.from||'-'}</td>
         <td style="padding:7px 10px;">${e.dest||'-'}</td>
         <td style="padding:7px 10px;white-space:nowrap;">${e.start||'-'}</td>
+        <td style="padding:7px 10px;white-space:nowrap;">${e.return||'-'}</td>
+        <td style="padding:7px 10px;">${e.email||'-'}</td>
         <td style="padding:7px 10px;">${e.travellers||'-'}</td>
-        <td style="padding:7px 10px;max-width:200px;overflow:hidden;text-overflow:ellipsis;">${e.message||'-'}</td>
+        <td style="padding:7px 10px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${e.message||'-'}</td>
         <td style="padding:7px 10px;white-space:nowrap;color:var(--muted);">${ts}</td>
       </tr>`;
     });
-    html+='</tbody></table>';
-    listDiv.innerHTML=html;
-    const badge=document.getElementById('dbEnquiryCount');
-    if(badge) badge.textContent=enqs.length;
-  } catch(e){ showMsg('dbMsg','❌ Error: '+e.message,'error'); }
+    html += '</tbody></table></div>';
+    listDiv.innerHTML = html;
+    const badge=document.getElementById('dbEnquiryCount'); if(badge) badge.textContent=enqs.length;
+  } catch(e) { showMsg('dbMsg','❌ '+e.message,'error'); }
 }
 
 async function dbClearEnquiries() {
-  if (!window._fbGetAll || !window._fbDelete) { showMsg('dbMsg','❌ Firebase not configured','error'); return; }
-  if (!confirm('Delete ALL enquiries from the database? This cannot be undone.')) return;
+  if (!window._fbGetAll) { showMsg('dbMsg','❌ Firebase not configured','error'); return; }
+  if (!confirm('Delete ALL enquiries from Firestore? This cannot be undone.')) return;
   try {
     const enqs = await window._fbGetAll('enquiries');
-    await Promise.all(enqs.map(e=>window._fbDelete('enquiries', e.id)));
+    await Promise.all(enqs.map(e=>window._fbDelete('enquiries',e.id)));
     document.getElementById('dbEnquiriesTable').style.display='none';
-    const badge=document.getElementById('dbEnquiryCount');
-    if(badge) badge.textContent='';
-    showMsg('dbMsg','✅ All enquiries cleared from Firebase!','success');
-  } catch(e){ showMsg('dbMsg','❌ Error: '+e.message,'error'); }
+    const badge=document.getElementById('dbEnquiryCount'); if(badge) badge.textContent='';
+    showMsg('dbMsg','✅ All enquiries cleared.','success');
+  } catch(e){ showMsg('dbMsg','❌ '+e.message,'error'); }
 }
 
-// ── Utility ──
 function showMsg(id, text, type) {
   const el = document.getElementById(id);
   el.textContent = text;
@@ -2895,4 +2882,7 @@ function showMsg(id, text, type) {
 </script>
 </body>
 </html>
- firebaseConfig
+
+
+
+
