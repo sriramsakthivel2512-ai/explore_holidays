@@ -1,0 +1,2400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Explore Holidays – Explore With World</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0a1628;
+  --navy2: #112240;
+  --orange: #f97316;
+  --orange2: #ea580c;
+  --gold: #fbbf24;
+  --white: #ffffff;
+  --off: #f8f9fc;
+  --text: #1e293b;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --card: #ffffff;
+  --grad: linear-gradient(135deg, #0a1628 0%, #1a3a6e 100%);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--white); overflow-x: hidden; }
+
+/* ---- TOP BAR ---- */
+.top-bar {
+  background: var(--navy);
+  color: #aac4e8;
+  padding: 8px 0;
+  font-size: 13px;
+}
+.top-bar .inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+}
+.top-bar a { color: #aac4e8; text-decoration: none; margin-left: 18px; }
+.top-bar a:hover { color: var(--orange); }
+.top-bar .contact-items { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.top-bar span { margin-right: 10px; }
+
+/* ---- NAV ---- */
+nav {
+  background: #fff;
+  position: sticky; top: 0; z-index: 1000;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+  padding: 0;
+}
+.nav-inner {
+  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between; height: 68px;
+}
+.logo {
+  display: flex; align-items: center; gap: 12px; text-decoration: none;
+}
+.logo-icon {
+  width: 44px; height: 44px; background: var(--orange); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: #fff;
+}
+.logo-text { line-height: 1; }
+.logo-text .l1 { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--navy); font-weight: 700; }
+.logo-text .l2 { font-size: 11px; color: var(--orange); letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+.nav-links { display: flex; align-items: center; gap: 4px; list-style: none; }
+.nav-links a {
+  padding: 8px 14px; border-radius: 8px; font-weight: 500; font-size: 14px;
+  color: var(--text); text-decoration: none; transition: all .2s;
+}
+.nav-links a:hover { background: var(--off); color: var(--orange); }
+.nav-cta {
+  background: var(--orange); color: #fff !important; border-radius: 8px;
+  padding: 9px 20px !important;
+}
+.nav-cta:hover { background: var(--orange2) !important; color: #fff !important; }
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+.hamburger span { width: 24px; height: 2px; background: var(--navy); border-radius: 2px; transition: .3s; }
+
+/* ---- HERO ---- */
+.hero {
+  min-height: 92vh;
+  background: linear-gradient(160deg, #071223 0%, #0f2444 40%, #1a3a6e 100%);
+  position: relative; overflow: hidden;
+  display: flex; align-items: center;
+}
+.hero-bg-shapes {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+}
+.hero-bg-shapes::before {
+  content: '';
+  position: absolute; width: 700px; height: 700px;
+  background: radial-gradient(circle, rgba(249,115,22,0.15) 0%, transparent 70%);
+  top: -200px; right: -200px; border-radius: 50%;
+}
+.hero-bg-shapes::after {
+  content: '';
+  position: absolute; width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%);
+  bottom: -100px; left: -100px; border-radius: 50%;
+}
+.floating-icons {
+  position: absolute; inset: 0; pointer-events: none;
+}
+.fi {
+  position: absolute; opacity: 0.07; font-size: 80px;
+  animation: floatup 8s ease-in-out infinite;
+}
+.fi:nth-child(1) { top: 15%; left: 8%; animation-delay: 0s; }
+.fi:nth-child(2) { top: 60%; left: 5%; animation-delay: 2s; font-size: 50px; }
+.fi:nth-child(3) { top: 25%; right: 12%; animation-delay: 1s; }
+.fi:nth-child(4) { bottom: 20%; right: 8%; animation-delay: 3s; font-size: 60px; }
+@keyframes floatup { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+.hero-content {
+  position: relative; z-index: 2;
+  max-width: 1200px; margin: 0 auto; padding: 60px 24px;
+  display: grid; grid-template-columns: 1fr 400px; gap: 60px; align-items: center;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(249,115,22,0.15); border: 1px solid rgba(249,115,22,0.3);
+  color: var(--orange); padding: 6px 16px; border-radius: 100px;
+  font-size: 13px; font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase; margin-bottom: 20px;
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(36px, 5vw, 64px); font-weight: 900;
+  color: #fff; line-height: 1.1; margin-bottom: 20px;
+}
+.hero h1 span { color: var(--orange); }
+.hero p {
+  color: #94b4d4; font-size: 17px; line-height: 1.7; margin-bottom: 36px;
+  max-width: 520px;
+}
+.hero-btns { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn-primary {
+  background: var(--orange); color: #fff; padding: 14px 32px;
+  border-radius: 10px; font-weight: 600; font-size: 15px;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: all .2s; display: inline-flex; align-items: center; gap: 8px;
+  box-shadow: 0 8px 30px rgba(249,115,22,0.4);
+}
+.btn-primary:hover { background: var(--orange2); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(249,115,22,0.5); }
+.btn-outline {
+  background: transparent; color: #fff;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  padding: 14px 32px; border-radius: 10px;
+  font-weight: 600; font-size: 15px;
+  text-decoration: none; cursor: pointer;
+  transition: all .2s; display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-outline:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.5); }
+.btn-wa {
+  background: #25D366; color: #fff; padding: 14px 32px;
+  border-radius: 10px; font-weight: 600; font-size: 15px;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: all .2s; display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-wa:hover { background: #1da851; transform: translateY(-2px); }
+
+/* Hero Stats */
+.hero-stats {
+  display: flex; gap: 32px; margin-top: 48px;
+}
+.stat { text-align: left; }
+.stat .num { font-family: 'Playfair Display', serif; font-size: 32px; color: #fff; font-weight: 700; }
+.stat .lbl { font-size: 13px; color: #94b4d4; }
+
+/* Hero Booking Card */
+.booking-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px 28px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+}
+.booking-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; color: var(--navy); margin-bottom: 22px;
+}
+.form-group { margin-bottom: 14px; }
+.form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 6px; }
+.form-group input, .form-group select {
+  width: 100%; padding: 11px 14px;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
+  background: var(--off); transition: border-color .2s;
+}
+.form-group input:focus, .form-group select:focus { outline: none; border-color: var(--orange); background: #fff; }
+.btn-quote {
+  width: 100%; background: var(--orange); color: #fff;
+  border: none; padding: 14px; border-radius: 10px;
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all .2s; margin-top: 8px;
+  box-shadow: 0 6px 20px rgba(249,115,22,0.3);
+}
+.btn-quote:hover { background: var(--orange2); transform: translateY(-1px); }
+
+/* ---- SECTION COMMON ---- */
+section { padding: 80px 24px; }
+.sec-header { text-align: center; margin-bottom: 50px; }
+.sec-label {
+  display: inline-block; background: rgba(249,115,22,0.1);
+  color: var(--orange); font-size: 12px; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  padding: 6px 16px; border-radius: 100px; margin-bottom: 14px;
+}
+.sec-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(28px, 4vw, 44px); color: var(--navy); font-weight: 700;
+  line-height: 1.2; margin-bottom: 14px;
+}
+.sec-title span { color: var(--orange); }
+.sec-sub { color: var(--muted); font-size: 16px; max-width: 560px; margin: 0 auto; line-height: 1.7; }
+.container { max-width: 1200px; margin: 0 auto; }
+
+/* ---- PACKAGES ---- */
+.packages { background: var(--off); }
+.packages-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px;
+}
+.pkg-card {
+  background: #fff; border-radius: 16px; overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  transition: transform .3s, box-shadow .3s;
+  position: relative;
+}
+.pkg-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.12); }
+.pkg-img {
+  height: 190px; overflow: hidden; position: relative;
+}
+.pkg-img-bg {
+  width: 100%; height: 100%; object-fit: cover;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 70px;
+  transition: transform .4s;
+}
+.pkg-card:hover .pkg-img-bg { transform: scale(1.05); }
+.pkg-badge {
+  position: absolute; top: 12px; left: 12px;
+  background: var(--orange); color: #fff;
+  font-size: 11px; font-weight: 700;
+  padding: 4px 12px; border-radius: 100px;
+}
+.pkg-body { padding: 20px; }
+.pkg-dest { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--navy); font-weight: 700; margin-bottom: 6px; }
+.pkg-meta { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.pkg-tag {
+  background: var(--off); color: var(--muted);
+  font-size: 11px; padding: 3px 10px; border-radius: 6px; font-weight: 500;
+}
+.pkg-includes { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.6; }
+.pkg-footer { display: flex; align-items: center; justify-content: space-between; }
+.pkg-price { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--orange); font-weight: 700; }
+.pkg-price span { font-size: 12px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-weight: 400; }
+.btn-book {
+  background: var(--navy); color: #fff;
+  padding: 9px 18px; border-radius: 8px;
+  font-size: 13px; font-weight: 600;
+  text-decoration: none; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all .2s;
+}
+.btn-book:hover { background: var(--orange); }
+
+/* Gradient placeholder backgrounds */
+.bg1 { background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%); }
+.bg2 { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+.bg3 { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+.bg4 { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%); }
+.bg5 { background: linear-gradient(135deg, #ec4899 0%, #db2777 100%); }
+.bg6 { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+.bg7 { background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%); }
+
+/* ---- VEHICLES ---- */
+.vehicles-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 22px;
+}
+.vehicle-card {
+  background: #fff; border-radius: 16px; overflow: hidden;
+  border: 1.5px solid var(--border);
+  transition: all .3s; text-align: center;
+}
+.vehicle-card:hover { border-color: var(--orange); box-shadow: 0 12px 40px rgba(249,115,22,0.12); transform: translateY(-4px); }
+.vehicle-icon {
+  padding: 36px 24px 20px;
+  font-size: 64px;
+  background: var(--off);
+}
+.vehicle-body { padding: 0 20px 24px; }
+.vehicle-name { font-family: 'Playfair Display', serif; font-size: 19px; color: var(--navy); font-weight: 700; margin-bottom: 6px; }
+.vehicle-seats { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
+.vehicle-ac { font-size: 12px; color: #10b981; font-weight: 600; margin-bottom: 14px; }
+.vehicle-price { font-size: 14px; color: var(--orange); font-weight: 700; margin-bottom: 14px; }
+.btn-call {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--navy); color: #fff;
+  padding: 9px 22px; border-radius: 8px;
+  font-size: 13px; font-weight: 600; text-decoration: none;
+  transition: background .2s;
+}
+.btn-call:hover { background: var(--orange); }
+
+/* ---- 60TH ANNIVERSARY ---- */
+.anniversary { background: var(--grad); position: relative; overflow: hidden; }
+.anniversary::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.anniversary .sec-title { color: #fff; }
+.anniversary .sec-sub { color: #94b4d4; }
+.anniversary .sec-label { background: rgba(251,191,36,0.2); color: var(--gold); }
+
+.ann-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; position: relative; z-index: 1; }
+.ann-features { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+.ann-feat {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px; padding: 16px;
+}
+.ann-feat .icon { font-size: 28px; margin-bottom: 8px; }
+.ann-feat .title { font-weight: 600; color: #fff; font-size: 13px; }
+.ann-feat .desc { font-size: 12px; color: #94b4d4; margin-top: 4px; }
+
+.pkg-tiers { display: grid; gap: 14px; }
+.tier {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px; padding: 20px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: all .2s;
+}
+.tier:hover { background: rgba(255,255,255,0.1); border-color: var(--orange); }
+.tier.featured { background: rgba(249,115,22,0.15); border-color: var(--orange); }
+.tier .t-name { font-weight: 700; color: #fff; font-size: 16px; }
+.tier .t-desc { font-size: 12px; color: #94b4d4; margin-top: 3px; }
+.tier .t-price { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--gold); font-weight: 700; text-align: right; }
+.tier .t-price small { display: block; font-size: 11px; color: #94b4d4; font-family: 'DM Sans', sans-serif; }
+
+/* ---- TEMPLES ---- */
+.temples-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+.temple-card {
+  border-radius: 16px; overflow: hidden;
+  position: relative; aspect-ratio: 3/4; cursor: pointer;
+  transition: transform .3s;
+}
+.temple-card:hover { transform: scale(1.02); }
+.temple-card:hover .temple-overlay { opacity: 1; }
+.temple-img {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 80px;
+}
+.temple-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0.3) 60%, transparent 100%);
+  padding: 24px;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  transition: opacity .3s;
+}
+.temple-name { font-family: 'Playfair Display', serif; font-size: 20px; color: #fff; font-weight: 700; }
+.temple-price { color: var(--orange); font-weight: 700; font-size: 14px; margin-top: 4px; }
+.temple-detail { font-size: 12px; color: #94b4d4; margin-top: 4px; }
+
+/* ---- HONEYMOON ---- */
+.honeymoon { background: var(--off); }
+.honey-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+.honey-card {
+  border-radius: 16px; overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  transition: all .3s; background: #fff;
+}
+.honey-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+.honey-img {
+  height: 220px; display: flex; align-items: center;
+  justify-content: center; font-size: 80px; position: relative;
+}
+.honey-img .couple-badge {
+  position: absolute; top: 14px; right: 14px;
+  background: rgba(236,72,153,0.9); color: #fff;
+  font-size: 10px; font-weight: 700;
+  padding: 4px 12px; border-radius: 100px;
+  letter-spacing: 1px; text-transform: uppercase;
+}
+.honey-body { padding: 22px; }
+.honey-name { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--navy); font-weight: 700; margin-bottom: 10px; }
+.honey-features { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.hf { font-size: 11px; color: #db2777; background: rgba(236,72,153,0.08); padding: 4px 10px; border-radius: 6px; font-weight: 600; }
+.honey-price { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--orange); font-weight: 700; }
+
+/* ---- REVIEWS ---- */
+.reviews { background: var(--navy); }
+.reviews .sec-title { color: #fff; }
+.reviews .sec-sub { color: #94b4d4; }
+.reviews-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+.review-card {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px; padding: 28px;
+  transition: all .3s;
+}
+.review-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(249,115,22,0.3); }
+.stars { color: var(--gold); font-size: 16px; margin-bottom: 12px; letter-spacing: 2px; }
+.review-text { color: #c8d8ec; font-size: 15px; line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+.reviewer { display: flex; align-items: center; gap: 12px; }
+.rev-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700; color: #fff;
+}
+.rev-name { font-weight: 600; color: #fff; font-size: 14px; }
+.rev-trip { font-size: 12px; color: #94b4d4; }
+
+/* ---- WHY CHOOSE ---- */
+.why-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 24px; }
+.why-card {
+  background: #fff; border-radius: 16px; padding: 32px 24px; text-align: center;
+  border: 1.5px solid var(--border);
+  transition: all .3s;
+}
+.why-card:hover { border-color: var(--orange); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(249,115,22,0.1); }
+.why-icon { font-size: 42px; margin-bottom: 14px; }
+.why-title { font-weight: 700; color: var(--navy); font-size: 15px; margin-bottom: 8px; }
+.why-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ---- CONTACT ---- */
+.contact { background: var(--off); }
+.contact-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 60px; align-items: start; }
+.contact-info { }
+.contact-info h3 { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--navy); margin-bottom: 14px; }
+.contact-info p { color: var(--muted); font-size: 15px; line-height: 1.7; margin-bottom: 32px; }
+.contact-item {
+  display: flex; align-items: center; gap: 16px; margin-bottom: 20px;
+  padding: 16px 20px; background: #fff; border-radius: 12px;
+  border: 1px solid var(--border); transition: all .2s;
+}
+.contact-item:hover { border-color: var(--orange); }
+.ci-icon {
+  width: 46px; height: 46px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.ci-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.ci-value { font-weight: 600; color: var(--navy); font-size: 15px; margin-top: 2px; }
+
+.inquiry-form { background: #fff; border-radius: 20px; padding: 36px; box-shadow: 0 8px 40px rgba(0,0,0,0.08); }
+.inquiry-form h3 { font-family: 'Playfair Display', serif; font-size: 24px; color: var(--navy); margin-bottom: 24px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.inquiry-form .form-group input,
+.inquiry-form .form-group select,
+.inquiry-form .form-group textarea {
+  width: 100%; padding: 12px 14px;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
+  background: var(--off); transition: border-color .2s;
+  resize: none;
+}
+.inquiry-form .form-group input:focus,
+.inquiry-form .form-group select:focus,
+.inquiry-form .form-group textarea:focus { outline: none; border-color: var(--orange); background: #fff; }
+.btn-enquiry {
+  width: 100%; background: var(--orange); color: #fff;
+  border: none; padding: 15px; border-radius: 10px;
+  font-size: 16px; font-weight: 700; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all .2s; margin-top: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 8px 30px rgba(249,115,22,0.3);
+}
+.btn-enquiry:hover { background: var(--orange2); transform: translateY(-2px); }
+
+/* ---- FOOTER ---- */
+footer {
+  background: var(--navy); color: #94b4d4;
+  padding: 60px 24px 0;
+}
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; max-width: 1200px; margin: 0 auto; padding-bottom: 48px; }
+.footer-about .logo { margin-bottom: 16px; }
+.footer-about .l1, .footer-about .l2 { color: #aac4e8 !important; }
+.footer-about .l1 { color: #fff !important; }
+.footer-about p { font-size: 14px; color: #6b8caf; line-height: 1.7; margin-bottom: 20px; }
+.social-links { display: flex; gap: 10px; }
+.social-link {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  text-decoration: none; font-size: 16px; transition: all .2s;
+}
+.social-link:hover { background: var(--orange); border-color: var(--orange); }
+.footer-col h4 { color: #fff; font-size: 15px; font-weight: 700; margin-bottom: 20px; }
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 10px; }
+.footer-col ul li a { color: #6b8caf; font-size: 14px; text-decoration: none; transition: color .2s; }
+.footer-col ul li a:hover { color: var(--orange); }
+.footer-bottom {
+  border-top: 1px solid rgba(255,255,255,0.07);
+  padding: 20px 0; text-align: center;
+  max-width: 1200px; margin: 0 auto;
+  font-size: 13px; color: #4a6585;
+}
+.footer-bottom span { color: var(--orange); }
+
+/* ---- STICKY WA ---- */
+.sticky-wa {
+  position: fixed; bottom: 28px; right: 28px; z-index: 9999;
+  width: 60px; height: 60px; border-radius: 50%;
+  background: #25D366;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 30px rgba(37,211,102,0.5);
+  text-decoration: none; font-size: 28px;
+  animation: pulse-wa 2s ease-in-out infinite;
+  transition: transform .2s;
+}
+.sticky-wa:hover { transform: scale(1.1); }
+@keyframes pulse-wa {
+  0%,100% { box-shadow: 0 8px 30px rgba(37,211,102,0.5); }
+  50% { box-shadow: 0 8px 50px rgba(37,211,102,0.8); }
+}
+
+/* ---- MOBILE ---- */
+@media (max-width: 900px) {
+  .hero-content { grid-template-columns: 1fr; }
+  .booking-card { max-width: 480px; }
+  .ann-grid { grid-template-columns: 1fr; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .hero-stats { gap: 20px; }
+}
+@media (max-width: 640px) {
+  .hero h1 { font-size: 32px; }
+  .nav-links { display: none; flex-direction: column; position: absolute; top: 68px; left: 0; right: 0; background: #fff; padding: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+  .nav-links.open { display: flex; }
+  .hamburger { display: flex; }
+  .form-row { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .ann-features { grid-template-columns: 1fr; }
+  .tier { flex-direction: column; align-items: flex-start; gap: 10px; }
+  section { padding: 60px 16px; }
+}
+
+/* Scroll reveal */
+.reveal { opacity: 0; transform: translateY(30px); transition: opacity .6s, transform .6s; }
+.reveal.visible { opacity: 1; transform: none; }
+
+/* ---- ADMIN PANEL ---- */
+.admin-btn {
+  position: fixed; bottom: 100px; right: 24px; z-index: 9999;
+  background: var(--navy); color: #fff;
+  width: 48px; height: 48px; border-radius: 50%;
+  border: none; font-size: 20px; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.admin-btn:hover { background: var(--orange); transform: scale(1.1); }
+
+.admin-overlay {
+  display: none; position: fixed; inset: 0; z-index: 10000;
+  background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+}
+.admin-overlay.open { display: flex; align-items: center; justify-content: center; }
+.admin-modal {
+  background: #fff; border-radius: 20px; width: 90%; max-width: 800px;
+  max-height: 90vh; overflow-y: auto; box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+}
+.admin-header {
+  background: var(--navy); padding: 20px 28px;
+  border-radius: 20px 20px 0 0;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.admin-header h2 { color: #fff; font-family: 'Playfair Display', serif; font-size: 22px; margin: 0; }
+.admin-close { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
+.admin-login { padding: 40px; text-align: center; }
+.admin-login h3 { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--navy); margin-bottom: 24px; }
+.admin-login input {
+  width: 100%; padding: 12px 16px; border: 1.5px solid var(--border);
+  border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 15px;
+  margin-bottom: 14px;
+}
+.admin-login input:focus { outline: none; border-color: var(--orange); }
+.admin-login-btn {
+  width: 100%; background: var(--orange); color: #fff;
+  border: none; padding: 13px; border-radius: 10px;
+  font-size: 15px; font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: background .2s;
+}
+.admin-login-btn:hover { background: var(--orange2); }
+.admin-body { padding: 28px; display: none; }
+.admin-body.active { display: block; }
+.admin-tabs { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+.admin-tab {
+  padding: 8px 18px; border-radius: 8px; border: 1.5px solid var(--border);
+  background: #fff; cursor: pointer; font-weight: 600; font-size: 14px;
+  font-family: 'DM Sans', sans-serif; transition: all .2s;
+}
+.admin-tab.active { background: var(--orange); color: #fff; border-color: var(--orange); }
+.admin-section { display: none; }
+.admin-section.active { display: block; }
+.admin-section h3 { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--navy); margin-bottom: 16px; }
+.pkg-edit-row {
+  background: var(--off); border-radius: 12px; padding: 16px 20px;
+  margin-bottom: 14px; display: flex; flex-direction: column; gap: 10px;
+}
+.pkg-edit-row label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 4px; display: block; }
+.pkg-edit-row input, .pkg-edit-row textarea {
+  width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
+  border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px;
+  transition: border-color .2s;
+}
+.pkg-edit-row input:focus, .pkg-edit-row textarea:focus { outline: none; border-color: var(--orange); }
+.pkg-edit-row textarea { resize: vertical; min-height: 70px; }
+.admin-save-btn {
+  background: var(--orange); color: #fff; border: none;
+  padding: 12px 28px; border-radius: 10px; font-size: 14px;
+  font-weight: 700; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: background .2s; margin-top: 8px;
+}
+.admin-save-btn:hover { background: var(--orange2); }
+.admin-add-btn {
+  background: var(--navy); color: #fff; border: none;
+  padding: 10px 22px; border-radius: 10px; font-size: 14px;
+  font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif;
+  transition: background .2s; margin-bottom: 18px;
+}
+.admin-add-btn:hover { background: var(--orange); }
+.admin-msg { margin-top: 14px; padding: 12px 18px; border-radius: 10px; font-weight: 600; font-size: 14px; display: none; }
+.admin-msg.success { background: #d1fae5; color: #065f46; display: block; }
+.admin-msg.error { background: #fee2e2; color: #991b1b; display: block; }
+
+/* ---- UPLOAD ZONE ---- */
+.upload-zone {
+  border: 2px dashed var(--border); border-radius: 10px;
+  padding: 20px; text-align: center; cursor: pointer;
+  background: var(--off); transition: all .2s; position: relative;
+  min-height: 100px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px;
+  margin-top: 6px;
+}
+.upload-zone:hover { border-color: var(--orange); background: rgba(249,115,22,0.04); }
+.upload-icon { font-size: 32px; }
+.upload-text { font-weight: 600; font-size: 14px; color: var(--text); }
+.upload-hint { font-size: 12px; color: var(--muted); }
+.upload-preview {
+  width: 100%; max-height: 140px; object-fit: cover;
+  border-radius: 8px; display: none; margin-top: 8px;
+}
+
+
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="inner">
+    <div class="contact-items">
+      <span>📞 <a href="tel:8056444576">8056444576</a></span>
+      <span>📧 <a href="mailto:explore.holi@gmail.com">explore.holi@gmail.com</a></span>
+    </div>
+    <div>
+      <a href="https://wa.me/918056444576" target="_blank">💬 WhatsApp Us</a>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav id="mainNav">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">🌴</div>
+      <div class="logo-text">
+        <div class="l1">Explore Holidays</div>
+        <div class="l2">Explore With World</div>
+      </div>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#packages">Packages</a></li>
+      <li><a href="#vehicles">Vehicles</a></li>
+      <li><a href="#temples">Temple Tours</a></li>
+      <li><a href="#honeymoon">Honeymoon</a></li>
+      <li><a href="#contact">Contact Us</a></li>
+      <li><a href="#contact" class="nav-cta">Book Now</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-shapes"></div>
+  <div class="floating-icons">
+    <div class="fi">🕌</div>
+    <div class="fi">🌊</div>
+    <div class="fi">🏔️</div>
+    <div class="fi">🌺</div>
+  </div>
+  <div class="hero-content container">
+    <div class="hero-left">
+      <div class="hero-badge">⭐ Your Global Travel Partner</div>
+      <h1>Explore The <span>World</span> With Us</h1>
+      <p>Affordable Tour Packages, Temple Trips, Honeymoon Tours & Bus Rentals from Chennai. Your perfect journey starts here.</p>
+      <div class="hero-btns">
+        <a href="#packages" class="btn-primary">🗺️ View Packages</a>
+        <a href="#contact" class="btn-outline">📋 Enquiry</a>
+        <a href="https://wa.me/918056444576" target="_blank" class="btn-wa">💬 WhatsApp</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="num">500+</div><div class="lbl">Happy Families</div></div>
+        <div class="stat"><div class="num">50+</div><div class="lbl">Destinations</div></div>
+        <div class="stat"><div class="num">5★</div><div class="lbl">Rated Service</div></div>
+      </div>
+    </div>
+    <div class="booking-card reveal">
+      <h3>📋 Send Enquiry</h3>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" placeholder="Your name" id="qName">
+        </div>
+        <div class="form-group">
+          <label>WhatsApp Number</label>
+          <input type="tel" placeholder="9876543210" id="qPhone">
+        </div>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group">
+          <label>From Place</label>
+          <input type="text" placeholder="e.g. Chennai" id="qPickup">
+        </div>
+        <div class="form-group">
+          <label>Destination</label>
+          <input type="text" placeholder="e.g. Ooty" id="qDest">
+        </div>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group">
+          <label>Travel Start Date</label>
+          <input type="date" id="qDate">
+        </div>
+        <div class="form-group">
+          <label>Return Date</label>
+          <input type="date" id="qReturn">
+        </div>
+      </div>
+      <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group">
+          <label>Email ID</label>
+          <input type="email" placeholder="your@email.com" id="qEmail">
+        </div>
+        <div class="form-group">
+          <label>No. of Travellers</label>
+          <input type="number" placeholder="e.g. 6" min="1" id="qPeople">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Message / Special Request</label>
+        <textarea id="qMsg" rows="3" placeholder="AC vehicle needed, hotel stay, special requirements..." style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);background:var(--off);resize:none;transition:border-color .2s;" onfocus="this.style.borderColor='var(--orange)';this.style.background='#fff'" onblur="this.style.borderColor='var(--border)';this.style.background='var(--off)'"></textarea>
+      </div>
+      <button class="btn-quote" onclick="sendQuote()">💬 Send Enquiry on WhatsApp</button>
+    </div>
+  </div>
+</section>
+
+<!-- PACKAGES -->
+<section class="packages" id="packages">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-label">🌟 Popular Tours</div>
+      <h2 class="sec-title">Our Best <span>Tour Packages</span></h2>
+      <p class="sec-sub">Handpicked destinations across Tamil Nadu for every budget and occasion</p>
+    </div>
+    <div class="packages-grid">
+
+      <div class="pkg-card reveal">
+        <div class="pkg-img">
+          <img src="https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=600&q=80" alt="Pondicherry Rock Beach" style="width:100%;height:100%;object-fit:cover;transition:transform .4s;">
+          <div class="pkg-badge">Bestseller</div>
+        </div>
+        <div class="pkg-body">
+          <div class="pkg-dest">Chennai → Pondicherry</div>
+          <div class="pkg-meta">
+            <span class="pkg-tag">2 Days / 1 Night</span>
+            <span class="pkg-tag">Beach & Café</span>
+          </div>
+          <div class="pkg-includes">🏖️ French Quarter • Rock Beach • Cafés • Hotel Stay</div>
+          <div class="pkg-footer">
+            <button class="btn-book" onclick="bookPackage('Chennai → Pondicherry','')">Book Now</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pkg-card reveal">
+        <div class="pkg-img">
+          <img src="https://images.unsplash.com/photo-1621430786947-a91ea2f12820?w=600&q=80" alt="Arunachaleswarar Temple Tiruvannamalai" style="width:100%;height:100%;object-fit:cover;transition:transform .4s;">
+          <div class="pkg-badge">One Day Trip</div>
+        </div>
+        <div class="pkg-body">
+          <div class="pkg-dest">Tiruvannamalai</div>
+          <div class="pkg-meta">
+            <span class="pkg-tag">1 Day Temple Trip</span>
+            <span class="pkg-tag">Girivalam</span>
+          </div>
+          <div class="pkg-includes">🙏 Arunachaleswarar Temple • Girivalam Walk • Prasad</div>
+          <div class="pkg-footer">
+            <button class="btn-book" onclick="bookPackage('Tiruvannamalai Temple Tour','')">Book Now</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pkg-card reveal">
+        <div class="pkg-img">
+          <img src="https://images.unsplash.com/photo-1609766857022-9a8e2e11b6ff?w=600&q=80" alt="Thirukadaiyur Temple" style="width:100%;height:100%;object-fit:cover;transition:transform .4s;">
+          <div class="pkg-badge">Family Tour</div>
+        </div>
+        <div class="pkg-body">
+          <div class="pkg-dest">Thirukadaiyur</div>
+          <div class="pkg-meta">
+            <span class="pkg-tag">2 Days</span>
+            <span class="pkg-tag">AC Bus Available</span>
+          </div>
+          <div class="pkg-includes">🛕 Amirthakadeshwarar Temple • Puja • Family Rituals</div>
+          <div class="pkg-footer">
+            <button class="btn-book" onclick="bookPackage('Thirukadaiyur Family Tour','')">Book Now</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pkg-card reveal">
+        <div class="pkg-img">
+          <img src="https://images.unsplash.com/photo-1596402184320-417e7178b2cd?w=600&q=80" alt="Meghamalai Tea Gardens" style="width:100%;height:100%;object-fit:cover;transition:transform .4s;">
+          <div class="pkg-badge">Hill Station</div>
+        </div>
+        <div class="pkg-body">
+          <div class="pkg-dest">Meghamalai</div>
+          <div class="pkg-meta">
+            <span class="pkg-tag">2 Days</span>
+            <span class="pkg-tag">Couple & Group</span>
+          </div>
+          <div class="pkg-includes">🌿 Tea Gardens • Waterfalls • Wildlife • Stay</div>
+          <div class="pkg-footer">
+            <button class="btn-book" onclick="bookPackage('Meghamalai Tour','')">Book Now</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pkg-card reveal">
+        <div class="pkg-img">
+          <img src="https://images.unsplash.com/photo-1630695664168-c2d77f04c83c?w=600&q=80" alt="Ooty Botanical Garden" style="width:100%;height:100%;object-fit:cover;transition:transform .4s;">
+          <div class="pkg-badge">Honeymoon</div>
+        </div>
+        <div class="pkg-body">
+          <div class="pkg-dest">Ooty Special</div>
+          <div class="pkg-meta">
+            <span class="pkg-tag">3 Days / 2 Nights</span>
+            <span class="pkg-tag">Couple Stay</span>
+          </div>
+          <div class="pkg-includes">🌹 Rose Garden • Ooty Lake • Botanical Garden • Dinner</div>
+          <div class="pkg-footer">
+            <button class="btn-book" onclick="bookPackage('Ooty Honeymoon Package','')">Book Now</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pkg-card reveal">
+        <div class="pkg-img">
+          <img src="https://images.unsplash.com/photo-1570458436416-b8fcccfe883f?w=600&q=80" alt="Rameswaram Temple" style="width:100%;height:100%;object-fit:cover;transition:transform .4s;">
+          <div class="pkg-badge">Weekend</div>
+        </div>
+        <div class="pkg-body">
+          <div class="pkg-dest">Rameswaram</div>
+          <div class="pkg-meta">
+            <span class="pkg-tag">2 Days</span>
+            <span class="pkg-tag">Temple & Beach</span>
+          </div>
+          <div class="pkg-includes">🙏 Ramanathaswamy • Pamban Bridge • Sea Bath</div>
+          <div class="pkg-footer">
+            <button class="btn-book" onclick="bookPackage('Rameswaram Tour','')">Book Now</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- VEHICLES -->
+<section id="vehicles">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-label">🚌 Transport</div>
+      <h2 class="sec-title">Vehicle <span>Rental</span></h2>
+      <p class="sec-sub">Comfortable and well-maintained vehicles for every group size</p>
+    </div>
+    <div class="vehicles-grid">
+      <div class="vehicle-card reveal">
+        <div class="vehicle-icon">🚐</div>
+        <div class="vehicle-body">
+          <div class="vehicle-name">Tempo Traveller</div>
+          <div class="vehicle-seats">12 Seater</div>
+          <div class="vehicle-ac">✅ AC Available</div>
+          <a href="tel:8056444576" class="btn-call">📞 Call Now</a>
+        </div>
+      </div>
+      <div class="vehicle-card reveal">
+        <div class="vehicle-icon">🚌</div>
+        <div class="vehicle-body">
+          <div class="vehicle-name">Mini Bus</div>
+          <div class="vehicle-seats">25 Seater</div>
+          <div class="vehicle-ac">✅ Full AC</div>
+          <a href="tel:8056444576" class="btn-call">📞 Call Now</a>
+        </div>
+      </div>
+      <div class="vehicle-card reveal">
+        <div class="vehicle-icon">🚎</div>
+        <div class="vehicle-body">
+          <div class="vehicle-name">Tourist Bus</div>
+          <div class="vehicle-seats">40 Seater</div>
+          <div class="vehicle-ac">✅ AC Coach</div>
+          <a href="tel:8056444576" class="btn-call">📞 Call Now</a>
+        </div>
+      </div>
+      <div class="vehicle-card reveal">
+        <div class="vehicle-icon">🚗</div>
+        <div class="vehicle-body">
+          <div class="vehicle-name">Innova Crysta</div>
+          <div class="vehicle-seats">7 Seater</div>
+          <div class="vehicle-ac">✅ AC Luxury</div>
+          <a href="tel:8056444576" class="btn-call">📞 Call Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 60TH ANNIVERSARY -->
+<section class="anniversary" id="anniversary">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-label">🎊 Special Celebration</div>
+      <h2 class="sec-title">60th Marriage <span style="color:var(--gold)">Anniversary</span> Packages</h2>
+      <p class="sec-sub">Sashtiapthapoorthi & Sadabhishekam – Celebrate this sacred milestone with us</p>
+    </div>
+    <div class="ann-grid">
+      <div>
+        <div class="ann-features reveal">
+          <div class="ann-feat"><div class="icon">🚌</div><div class="title">AC Bus / Car</div><div class="desc">Comfortable transport for all</div></div>
+          <div class="ann-feat"><div class="icon">🏨</div><div class="title">Hotel Stay</div><div class="desc">Premium accommodation</div></div>
+          <div class="ann-feat"><div class="icon">🛕</div><div class="title">Temple Function</div><div class="desc">Purohit & Homam arranged</div></div>
+          <div class="ann-feat"><div class="icon">🌸</div><div class="title">Decoration</div><div class="desc">Flowers & traditional setup</div></div>
+          <div class="ann-feat"><div class="icon">📸</div><div class="title">Photography</div><div class="desc">Photo & videography</div></div>
+          <div class="ann-feat"><div class="icon">🍽️</div><div class="title">All Meals</div><div class="desc">Breakfast, lunch & dinner</div></div>
+          <div class="ann-feat"><div class="icon">👴</div><div class="title">Senior Care</div><div class="desc">Special assistance provided</div></div>
+        </div>
+        <p style="color:#94b4d4; font-size:14px;">Featured Destinations: <strong style="color:#fff">Thirukadaiyur • Rameswaram • Kumbakonam</strong></p>
+      </div>
+      <div class="pkg-tiers reveal">
+        <div class="tier">
+          <div>
+            <div class="t-name">Basic Package</div>
+            <div class="t-desc">Transport + Temple + Meals</div>
+          </div>
+          <div>
+            <button class="btn-book" style="margin-top:8px" onclick="bookPackage('60th Anniversary - Basic Package','')">Book</button>
+          </div>
+        </div>
+        <div class="tier featured">
+          <div>
+            <div class="t-name">⭐ Premium Package</div>
+            <div class="t-desc">Everything + Photography + Decoration</div>
+          </div>
+          <div>
+            <button class="btn-book" style="margin-top:8px" onclick="bookPackage('60th Anniversary - Premium Package','')">Book</button>
+          </div>
+        </div>
+        <div class="tier">
+          <div>
+            <div class="t-name">💎 Luxury Package</div>
+            <div class="t-desc">Full luxury + 2 nights stay</div>
+          </div>
+          <div>
+            <button class="btn-book" style="margin-top:8px" onclick="bookPackage('60th Anniversary - Luxury Package','')">Book</button>
+          </div>
+        </div>
+        <a href="https://wa.me/918056444576?text=Hello!%20I%20need%20details%20about%2060th%20Anniversary%20packages." target="_blank" class="btn-wa" style="justify-content:center; margin-top:8px;">💬 Enquire on WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEMPLES -->
+<section id="temples">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-label">🛕 Divine Journeys</div>
+      <h2 class="sec-title">Temple <span>Tours</span></h2>
+      <p class="sec-sub">Sacred destinations across Tamil Nadu for spiritual seekers</p>
+    </div>
+    <div class="temples-grid">
+      <div class="temple-card reveal">
+        <div class="temple-img bg2">🏔️</div>
+        <div class="temple-overlay">
+          <div class="temple-name">Tiruvannamalai</div>
+          <div class="temple-detail">Girivalam • Arunachala Darshan</div>
+        </div>
+      </div>
+      <div class="temple-card reveal">
+        <div class="temple-img bg6">🌊</div>
+        <div class="temple-overlay">
+          <div class="temple-name">Rameswaram</div>
+          <div class="temple-detail">22 Wells • Sea Bath • Pamban</div>
+        </div>
+      </div>
+      <div class="temple-card reveal">
+        <div class="temple-img bg3">🌟</div>
+        <div class="temple-overlay">
+          <div class="temple-name">Velankanni</div>
+          <div class="temple-detail">Basilica • Miraculous Church</div>
+        </div>
+      </div>
+      <div class="temple-card reveal">
+        <div class="temple-img bg7">🪐</div>
+        <div class="temple-overlay">
+          <div class="temple-name">Navagraha Tour</div>
+          <div class="temple-detail">9 Temples • 2 Days</div>
+        </div>
+      </div>
+      <div class="temple-card reveal">
+        <div class="temple-img bg4">💫</div>
+        <div class="temple-overlay">
+          <div class="temple-name">Thirukadaiyur</div>
+          <div class="temple-detail">60th Anniversary Rituals</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HONEYMOON -->
+<section class="honeymoon" id="honeymoon">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-label">💑 Romance</div>
+      <h2 class="sec-title">Honeymoon & <span>Couple Trips</span></h2>
+      <p class="sec-sub">Create unforgettable memories together at these magical destinations</p>
+    </div>
+    <div class="honey-grid">
+      <div class="honey-card reveal">
+        <div class="honey-img bg4">🏔️
+          <div class="couple-badge">Honeymoon Special</div>
+        </div>
+        <div class="honey-body">
+          <div class="honey-name">Ooty</div>
+          <div class="honey-features">
+            <span class="hf">🌹 Candle Dinner</span>
+            <span class="hf">🌸 Flower Decor</span>
+            <span class="hf">📸 Photography</span>
+          </div>
+          <button class="btn-book" style="margin-top:12px" onclick="bookPackage('Ooty Honeymoon','')">Book Now</button>
+        </div>
+      </div>
+      <div class="honey-card reveal">
+        <div class="honey-img bg5">🌸
+          <div class="couple-badge">Couple Special</div>
+        </div>
+        <div class="honey-body">
+          <div class="honey-name">Kodaikanal</div>
+          <div class="honey-features">
+            <span class="hf">🚣 Boating</span>
+            <span class="hf">🏡 Private Stay</span>
+            <span class="hf">📸 Photoshoot</span>
+          </div>
+          <button class="btn-book" style="margin-top:12px" onclick="bookPackage('Kodaikanal Couple Package','')">Book Now</button>
+        </div>
+      </div>
+      <div class="honey-card reveal">
+        <div class="honey-img bg1">🌊
+          <div class="couple-badge">Beach Romance</div>
+        </div>
+        <div class="honey-body">
+          <div class="honey-name">Pondicherry</div>
+          <div class="honey-features">
+            <span class="hf">🏖️ Beach Stay</span>
+            <span class="hf">🍷 Fine Dining</span>
+            <span class="hf">🛵 Scooter Tour</span>
+          </div>
+          <button class="btn-book" style="margin-top:12px" onclick="bookPackage('Pondicherry Couple Package','')">Book Now</button>
+        </div>
+      </div>
+      <div class="honey-card reveal">
+        <div class="honey-img bg3">🌿
+          <div class="couple-badge">Hidden Gem</div>
+        </div>
+        <div class="honey-body">
+          <div class="honey-name">Meghamalai</div>
+          <div class="honey-features">
+            <span class="hf">🍵 Tea Estate</span>
+            <span class="hf">🌄 Sunrise View</span>
+            <span class="hf">🦜 Wildlife</span>
+          </div>
+          <button class="btn-book" style="margin-top:12px" onclick="bookPackage('Meghamalai Couple Package','')">Book Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-label">⭐ Testimonials</div>
+      <h2 class="sec-title">What Our <span style="color:var(--gold)">Customers Say</span></h2>
+      <p class="sec-sub">Real stories from real travellers who trusted Explore Holidays</p>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card reveal">
+        <div class="stars">★★★★★</div>
+        <div class="review-text">"Wonderful service! The Tiruvannamalai trip was perfectly organised. Driver was very polite and the vehicle was clean and comfortable."</div>
+        <div class="reviewer">
+          <div class="rev-avatar" style="background:#f97316">R</div>
+          <div>
+            <div class="rev-name">Rajkumar S.</div>
+            <div class="rev-trip">Tiruvannamalai Temple Tour</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal">
+        <div class="stars">★★★★★</div>
+        <div class="review-text">"We booked our 60th anniversary package with them. Everything was taken care of – decoration, puja, photography. Highly recommend to all families!"</div>
+        <div class="reviewer">
+          <div class="rev-avatar" style="background:#10b981">M</div>
+          <div>
+            <div class="rev-name">Meenakshi Family</div>
+            <div class="rev-trip">Sashtiapthapoorthi – Thirukadaiyur</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal">
+        <div class="stars">★★★★★</div>
+        <div class="review-text">"The Ooty honeymoon package was beyond our expectations. Candle dinner, flower decoration – everything was just beautiful. Thank you Explore Holidays!"</div>
+        <div class="reviewer">
+          <div class="rev-avatar" style="background:#8b5cf6">P</div>
+          <div>
+            <div class="rev-name">Priya & Karthik</div>
+            <div class="rev-trip">Ooty Honeymoon Package</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal">
+        <div class="stars">★★★★★</div>
+        <div class="review-text">"Very affordable and safe travel. Booked a 40-seater bus for our company trip to Pondicherry. On-time pickup and drop. Will book again!"</div>
+        <div class="reviewer">
+          <div class="rev-avatar" style="background:#0ea5e9">A</div>
+          <div>
+            <div class="rev-name">Arjun Enterprises</div>
+            <div class="rev-trip">Corporate Trip – Pondicherry</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal">
+        <div class="stars">★★★★★</div>
+        <div class="review-text">"Booked the Navagraha tour for my parents. The purohit arrangements and all temple visits were managed perfectly. Very happy with the service."</div>
+        <div class="reviewer">
+          <div class="rev-avatar" style="background:#f59e0b">V</div>
+          <div>
+            <div class="rev-name">Vijayalakshmi</div>
+            <div class="rev-trip">Navagraha Temple Tour</div>
+          </div>
+        </div>
+      </div>
+      <div class="review-card reveal">
+        <div class="stars">★★★★★</div>
+        <div class="review-text">"Best travel company in Chennai for Tamil Nadu trips. Good communication, timely responses on WhatsApp and great package value for money."</div>
+        <div class="reviewer">
+          <div class="rev-avatar" style="background:#ec4899">S</div>
+          <div>
+            <div class="rev-name">Santhosh Kumar</div>
+            <div class="rev-trip">Rameswaram Family Tour</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE -->
+<section>
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-label">🏆 Why Us</div>
+      <h2 class="sec-title">Why Choose <span>Explore Holidays</span></h2>
+      <p class="sec-sub">We don't just plan trips – we create memories</p>
+    </div>
+    <div class="why-grid">
+      <div class="why-card reveal">
+        <div class="why-icon">💰</div>
+        <div class="why-title">Affordable Packages</div>
+        <div class="why-desc">Best value for money with transparent pricing and no hidden charges</div>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-icon">🛡️</div>
+        <div class="why-title">Safe Travel</div>
+        <div class="why-desc">All vehicles regularly serviced with trained, experienced drivers</div>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-icon">🚌</div>
+        <div class="why-title">Comfortable Vehicles</div>
+        <div class="why-desc">AC coaches, Tempo Travellers, cars and buses for all group sizes</div>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-icon">👨‍✈️</div>
+        <div class="why-title">Trusted Drivers</div>
+        <div class="why-desc">Verified, polite and knowledgeable local drivers</div>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-icon">👨‍👩‍👧</div>
+        <div class="why-title">Family Friendly</div>
+        <div class="why-desc">Special care for elders, children and special occasions</div>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-icon">📞</div>
+        <div class="why-title">24x7 Support</div>
+        <div class="why-desc">Always reachable on phone and WhatsApp before, during and after trips</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-label">📩 Get In Touch</div>
+      <h2 class="sec-title">Contact <span>Us</span></h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info reveal">
+        <h3>Plan Your Dream Trip Today</h3>
+        <p>Fill in the form or reach us directly. We'll respond within minutes on WhatsApp!</p>
+        <div class="contact-item">
+          <div class="ci-icon" style="background:rgba(249,115,22,0.1)">📞</div>
+          <div>
+            <div class="ci-label">Phone</div>
+            <div class="ci-value"><a href="tel:8056444576" style="color:inherit; text-decoration:none;">8056444576</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="ci-icon" style="background:rgba(59,130,246,0.1)">📧</div>
+          <div>
+            <div class="ci-label">Email</div>
+            <div class="ci-value"><a href="mailto:explore.holi@gmail.com" style="color:inherit; text-decoration:none;">explore.holi@gmail.com</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="ci-icon" style="background:rgba(37,211,102,0.1)">💬</div>
+          <div>
+            <div class="ci-label">WhatsApp</div>
+            <div class="ci-value"><a href="https://wa.me/918056444576" target="_blank" style="color:#25D366; text-decoration:none; font-weight:600">Chat on WhatsApp →</a></div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="ci-icon" style="background:rgba(139,92,246,0.1)">📍</div>
+          <div>
+            <div class="ci-label">Head Office</div>
+            <div class="ci-value">733/60 Golden Nagar, Sandapet<br>Tirukoilur – 605 766</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="inquiry-form reveal">
+        <h3>📋 Send Enquiry</h3>
+        <div class="form-row">
+          <div class="form-group"><label>Full Name</label><input type="text" placeholder="Your name" id="eName"></div>
+          <div class="form-group"><label>WhatsApp Number</label><input type="tel" placeholder="9876543210" id="ePhone"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>From Place</label><input type="text" placeholder="e.g. Chennai" id="eFrom"></div>
+          <div class="form-group"><label>Destination</label><input type="text" placeholder="e.g. Ooty" id="eDest"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Travel Start Date</label><input type="date" id="eStart"></div>
+          <div class="form-group"><label>Return Date</label><input type="date" id="eEnd"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Email ID</label><input type="email" placeholder="your@email.com" id="eEmail"></div>
+          <div class="form-group"><label>No. of Travellers</label><input type="number" placeholder="e.g. 6" min="1" id="eTravellers"></div>
+        </div>
+        <div class="form-group"><label>Message / Special Request</label><textarea rows="3" placeholder="AC vehicle needed, hotel stay, special requirements..." id="eMsg"></textarea></div>
+        <button class="btn-enquiry" onclick="sendEnquiry()">💬 Send Enquiry on WhatsApp</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-about">
+      <div class="logo">
+        <div class="logo-icon">🌴</div>
+        <div class="logo-text">
+          <div class="l1">Explore Holidays</div>
+          <div class="l2">Explore With World</div>
+        </div>
+      </div>
+      <p>Your trusted travel partner for tours, temple trips, honeymoon packages and vehicle rentals across India and world destinations.</p>
+      <div class="social-links">
+        <a class="social-link" href="#" title="Instagram">📸</a>
+        <a class="social-link" href="#" title="Facebook">👍</a>
+        <a class="social-link" href="https://wa.me/918056444576" target="_blank" title="WhatsApp">💬</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#packages">Tour Packages</a></li>
+        <li><a href="#vehicles">Vehicle Rental</a></li>
+        <li><a href="#temples">Temple Tours</a></li>
+        <li><a href="#honeymoon">Honeymoon Trips</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Popular Tours</h4>
+      <ul>
+        <li><a href="#">Tiruvannamalai</a></li>
+        <li><a href="#">Rameswaram</a></li>
+        <li><a href="#">Ooty Honeymoon</a></li>
+        <li><a href="#">Navagraha Tour</a></li>
+        <li><a href="#">Pondicherry</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Gallery</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Terms & Conditions</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 <span>Explore Holidays</span>. All rights reserved. | Tamil Nadu's Trusted Travel Partner | 📞 8056444576</p>
+  </div>
+</footer>
+
+<!-- STICKY WA -->
+<a href="https://wa.me/918056444576" target="_blank" class="sticky-wa" title="Chat on WhatsApp">💬</a>
+
+<!-- ADMIN PANEL BUTTON -->
+<button class="admin-btn" onclick="toggleAdmin()" title="Admin Panel">⚙️</button>
+
+<!-- ADMIN OVERLAY -->
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-modal">
+    <div class="admin-header">
+      <h2>🛡️ Admin Panel – Explore Holidays</h2>
+      <button class="admin-close" onclick="closeAdmin()">✕</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="admin-login" id="adminLogin">
+      <div style="font-size:48px;margin-bottom:12px;">🔐</div>
+      <h3>Admin Login</h3>
+      <p style="color:var(--muted);font-size:13px;margin-bottom:22px;">Enter your credentials to manage the website</p>
+      <input type="text" placeholder="Username" id="adminUser">
+      <input type="password" placeholder="Password" id="adminPass" onkeydown="if(event.key==='Enter')doAdminLogin()">
+      <button class="admin-login-btn" onclick="doAdminLogin()">Login to Dashboard →</button>
+      <div class="admin-msg" id="loginMsg"></div>
+    </div>
+
+    <!-- DASHBOARD BODY -->
+    <div class="admin-body" id="adminBody">
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('packages',this)">📦 Packages</button>
+        <button class="admin-tab" onclick="switchTab('temples',this)">🛕 Temple Tours</button>
+        <button class="admin-tab" onclick="switchTab('anniversary',this)">🎊 60th Anniversary</button>
+        <button class="admin-tab" onclick="switchTab('vehicles',this)">🚌 Vehicles</button>
+        <button class="admin-tab" onclick="switchTab('contact',this)">📞 Contact</button>
+        <button class="admin-tab" onclick="switchTab('addpkg',this)">➕ Add Package</button>
+        <button class="admin-tab" onclick="switchTab('addtemple',this)">➕ Add Temple Tour</button>
+        <button class="admin-tab" onclick="switchTab('honeymoon',this)">💑 Honeymoon</button>
+      </div>
+
+      <!-- ═══ PACKAGES TAB ═══ -->
+      <div class="admin-section active" id="tab-packages">
+        <h3>✏️ Edit Tour Packages</h3>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Click "Upload Image" to change package photos. Changes apply live on the page.</p>
+        <div id="pkgEditorList"></div>
+        <button class="admin-save-btn" onclick="savePackages()">💾 Apply All Package Changes</button>
+        <div class="admin-msg" id="pkgMsg"></div>
+      </div>
+
+      <!-- ═══ TEMPLE TOURS TAB ═══ -->
+      <div class="admin-section" id="tab-temples">
+        <h3>✏️ Edit Temple Tours</h3>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Upload images and edit details for each temple card on the website.</p>
+        <div id="templeEditorList"></div>
+        <button class="admin-save-btn" onclick="saveTemples()">💾 Apply Temple Changes</button>
+        <div class="admin-msg" id="templeMsg"></div>
+      </div>
+
+      <!-- ═══ 60TH ANNIVERSARY TAB ═══ -->
+      <div class="admin-section" id="tab-anniversary">
+        <h3>✏️ Edit 60th Anniversary Packages</h3>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:16px;">Update the anniversary section heading, description, featured destinations, and package tiers.</p>
+
+        <div class="pkg-edit-row">
+          <label>Section Title</label>
+          <input type="text" id="annTitle" value="60th Marriage Anniversary Packages">
+        </div>
+        <div class="pkg-edit-row">
+          <label>Subtitle</label>
+          <input type="text" id="annSub" value="Sashtiapthapoorthi & Sadabhishekam – Celebrate this sacred milestone with us">
+        </div>
+        <div class="pkg-edit-row">
+          <label>Featured Destinations</label>
+          <input type="text" id="annDest" value="Thirukadaiyur • Rameswaram • Kumbakonam">
+        </div>
+
+        <h4 style="margin:18px 0 12px;color:var(--navy);font-size:15px;">Package Tiers</h4>
+        <div id="annTierList"></div>
+
+        <h4 style="margin:18px 0 12px;color:var(--navy);font-size:15px;">What's Included Features</h4>
+        <div id="annFeatList"></div>
+
+        <button class="admin-add-btn" onclick="addAnnTier()">➕ Add New Tier</button>
+        <button class="admin-save-btn" onclick="saveAnniversary()">💾 Apply Anniversary Changes</button>
+        <div class="admin-msg" id="annMsg"></div>
+      </div>
+
+      <!-- ═══ VEHICLES TAB ═══ -->
+      <div class="admin-section" id="tab-vehicles">
+        <h3>✏️ Manage Vehicles</h3>
+        <div id="vehicleEditorList"></div>
+        <button class="admin-save-btn" onclick="saveVehicles()">💾 Save Vehicle Changes</button>
+        <div class="admin-msg" id="vehMsg"></div>
+      </div>
+
+      <!-- ═══ CONTACT TAB ═══ -->
+      <div class="admin-section" id="tab-contact">
+        <h3>✏️ Edit Contact Details</h3>
+        <div class="pkg-edit-row">
+          <label>Phone Number</label>
+          <input type="text" id="adPhone" value="8056444576">
+        </div>
+        <div class="pkg-edit-row">
+          <label>Email</label>
+          <input type="text" id="adEmail" value="explore.holi@gmail.com">
+        </div>
+        <div class="pkg-edit-row">
+          <label>Head Office Address</label>
+          <textarea id="adAddress">733/60 Golden Nagar, Sandapet, Tirukoilur – 605 766</textarea>
+        </div>
+        <div class="pkg-edit-row">
+          <label>WhatsApp Number (with country code, no +)</label>
+          <input type="text" id="adWA" value="918056444576">
+        </div>
+        <button class="admin-save-btn" onclick="saveContact()">💾 Save Contact</button>
+        <div class="admin-msg" id="contactMsg"></div>
+      </div>
+
+      <!-- ═══ ADD PACKAGE TAB ═══ -->
+      <div class="admin-section" id="tab-addpkg">
+        <h3>➕ Add New Tour Package</h3>
+        <div class="pkg-edit-row">
+          <label>Destination / Title</label>
+          <input type="text" id="newPkgTitle" placeholder="e.g. Kerala Backwaters">
+        </div>
+        <div class="pkg-edit-row">
+          <label>Badge</label>
+          <input type="text" id="newPkgBadge" placeholder="e.g. New, Bestseller, Weekend">
+        </div>
+        <div class="pkg-edit-row">
+          <label>Duration</label>
+          <input type="text" id="newPkgDur" placeholder="e.g. 3 Days / 2 Nights">
+        </div>
+        <div class="pkg-edit-row">
+          <label>Category Tag</label>
+          <input type="text" id="newPkgCat" placeholder="e.g. Nature & Backwaters">
+        </div>
+        <div class="pkg-edit-row">
+          <label>Includes / Highlights</label>
+          <textarea id="newPkgInc" placeholder="e.g. 🚢 Houseboat • Beaches • Ayurveda"></textarea>
+        </div>
+        <div class="pkg-edit-row">
+          <label>Package Image</label>
+          <div class="upload-zone" id="newPkgUploadZone" onclick="document.getElementById('newPkgFile').click()">
+            <div class="upload-icon">📷</div>
+            <div class="upload-text">Click to upload image</div>
+            <div class="upload-hint">JPG, PNG, WEBP • Max 5MB</div>
+            <img class="upload-preview" id="newPkgPreview" src="" alt="">
+          </div>
+          <input type="file" id="newPkgFile" accept="image/*" style="display:none" onchange="previewUpload(this,'newPkgPreview','newPkgUploadZone')">
+        </div>
+        <button class="admin-save-btn" onclick="addNewPackage()">➕ Add Package to Website</button>
+        <div class="admin-msg" id="addpkgMsg"></div>
+      </div>
+
+      <!-- ═══ ADD TEMPLE TOUR TAB ═══ -->
+      <div class="admin-section" id="tab-addtemple">
+        <h3>➕ Add New Temple Tour</h3>
+        <div class="pkg-edit-row">
+          <label>Temple Name</label>
+          <input type="text" id="newTplName" placeholder="e.g. Madurai Meenakshi Amman">
+        </div>
+        <div class="pkg-edit-row">
+          <label>Details / Sub-text</label>
+          <input type="text" id="newTplDetail" placeholder="e.g. Kodi Festivals • Darshan • Night Tour">
+        </div>
+        <div class="pkg-edit-row">
+          <label>Temple Image</label>
+          <div class="upload-zone" id="newTplUploadZone" onclick="document.getElementById('newTplFile').click()">
+            <div class="upload-icon">🛕</div>
+            <div class="upload-text">Click to upload temple image</div>
+            <div class="upload-hint">JPG, PNG, WEBP • Max 5MB</div>
+            <img class="upload-preview" id="newTplPreview" src="" alt="">
+          </div>
+          <input type="file" id="newTplFile" accept="image/*" style="display:none" onchange="previewUpload(this,'newTplPreview','newTplUploadZone')">
+        </div>
+        <button class="admin-save-btn" onclick="addNewTemple()">➕ Add Temple Tour to Website</button>
+        <div class="admin-msg" id="addtplMsg"></div>
+      </div>
+
+      <!-- ═══ HONEYMOON TAB ═══ -->
+      <div class="admin-section" id="tab-honeymoon">
+        <h3>💑 Manage Honeymoon & Couple Packages</h3>
+        <p style="color:var(--muted);font-size:13px;margin-bottom:20px;">Edit or remove existing honeymoon cards, then add new ones below.</p>
+
+        <!-- EXISTING CARDS EDITOR -->
+        <div id="honeyEditorList"></div>
+        <button class="admin-save-btn" onclick="saveHoneymoon()" style="margin-bottom:32px;">💾 Save All Honeymoon Changes</button>
+        <div class="admin-msg" id="honeyMsg"></div>
+
+        <!-- DIVIDER -->
+        <div style="border-top:2px dashed var(--border);margin:28px 0 24px;"></div>
+        <h3 style="color:var(--navy);font-size:17px;margin-bottom:16px;">➕ Add New Honeymoon Package</h3>
+
+        <!-- ADD FORM -->
+        <div class="pkg-edit-row">
+          <label>Destination Name</label>
+          <input type="text" id="nh_name" placeholder="e.g. Munnar, Kerala">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="pkg-edit-row">
+            <label>Badge Label</label>
+            <input type="text" id="nh_badge" placeholder="e.g. Honeymoon Special">
+          </div>
+          <div class="pkg-edit-row">
+            <label>Duration</label>
+            <input type="text" id="nh_duration" placeholder="e.g. 3 Days / 2 Nights">
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+          <div class="pkg-edit-row">
+            <label>Feature 1</label>
+            <input type="text" id="nh_f1" placeholder="🌹 Candle Dinner">
+          </div>
+          <div class="pkg-edit-row">
+            <label>Feature 2</label>
+            <input type="text" id="nh_f2" placeholder="🌸 Flower Decor">
+          </div>
+          <div class="pkg-edit-row">
+            <label>Feature 3</label>
+            <input type="text" id="nh_f3" placeholder="📸 Photography">
+          </div>
+        </div>
+        <div class="pkg-edit-row">
+          <label>Card Image (optional)</label>
+          <div class="upload-zone" id="nh_zone" onclick="document.getElementById('nh_file').click()">
+            <div class="upload-icon">💑</div>
+            <div class="upload-text">Click to upload image</div>
+            <div class="upload-hint">JPG, PNG, WEBP • Max 5MB</div>
+            <img class="upload-preview" id="nh_preview" src="" alt="">
+          </div>
+          <input type="file" id="nh_file" accept="image/*" style="display:none" onchange="previewUpload(this,'nh_preview','nh_zone')">
+        </div>
+        <button class="admin-add-btn" onclick="addHoneymoonCard()" style="width:100%;text-align:center;padding:13px;">➕ Add to Honeymoon Section</button>
+        <div class="admin-msg" id="honeyAddMsg"></div>
+      </div>
+
+    </div><!-- /admin-body -->
+  </div><!-- /admin-modal -->
+</div><!-- /admin-overlay -->
+
+<script>
+// ══════════════════════════════════════════
+//  MAIN SITE FUNCTIONS
+// ══════════════════════════════════════════
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+function sendQuote() {
+  const name   = document.getElementById('qName').value.trim() || '-';
+  const phone  = document.getElementById('qPhone').value.trim() || '-';
+  const pickup = document.getElementById('qPickup').value.trim() || '-';
+  const dest   = document.getElementById('qDest').value.trim() || '-';
+  const date   = document.getElementById('qDate').value || '-';
+  const ret    = document.getElementById('qReturn').value || '-';
+  const email  = document.getElementById('qEmail').value.trim() || '-';
+  const people = document.getElementById('qPeople').value || '-';
+  const special= document.getElementById('qMsg').value.trim() || '-';
+  const msg = `Hello Explore Holidays! 🙏\n\n📋 *New Enquiry*\n\n👤 Name: ${name}\n📞 WhatsApp: ${phone}\n📍 From: ${pickup}\n🎯 Destination: ${dest}\n📅 Travel Start Date: ${date}\n🔙 Return Date: ${ret}\n📧 Email: ${email}\n👥 No. of Travellers: ${people}\n💬 Message: ${special}\n\nPlease share package details. Thank you!`;
+  window.open(`https://wa.me/918056444576?text=${encodeURIComponent(msg)}`, '_blank');
+}
+function bookPackage(name) {
+  const msg = `Hello Explore Holidays! 🙏\n\nI want to book:\n📦 Package: ${name}\n\nPlease share price and availability. Thank you!`;
+  window.open(`https://wa.me/918056444576?text=${encodeURIComponent(msg)}`, '_blank');
+}
+function sendEnquiry() {
+  const name      = document.getElementById('eName').value.trim() || '-';
+  const phone     = document.getElementById('ePhone').value.trim() || '-';
+  const from      = document.getElementById('eFrom').value.trim() || '-';
+  const dest      = document.getElementById('eDest').value.trim() || '-';
+  const start     = document.getElementById('eStart').value || '-';
+  const end       = document.getElementById('eEnd').value || '-';
+  const email     = document.getElementById('eEmail').value.trim() || '-';
+  const travellers= document.getElementById('eTravellers').value || '-';
+  const msg       = document.getElementById('eMsg').value.trim() || '-';
+  const wa = `Hello Explore Holidays! 🙏\n\n📋 *New Enquiry*\n\n👤 Name: ${name}\n📞 WhatsApp: ${phone}\n📍 From: ${from}\n🎯 Destination: ${dest}\n📅 Start Date: ${start}\n🔙 Return Date: ${end}\n📧 Email: ${email}\n👥 Travellers: ${travellers}\n💬 Message: ${msg}\n\nPlease help me plan this trip. Thank you!`;
+  window.open(`https://wa.me/918056444576?text=${encodeURIComponent(wa)}`, '_blank');
+}
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').style.boxShadow =
+    window.scrollY > 20 ? '0 4px 30px rgba(0,0,0,0.12)' : '0 2px 20px rgba(0,0,0,0.08)';
+});
+
+// ══════════════════════════════════════════
+//  IMAGE UPLOAD HELPER
+// ══════════════════════════════════════════
+function previewUpload(input, previewId, zoneId) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { alert('Image too large. Please use an image under 5MB.'); return; }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const preview = document.getElementById(previewId);
+    const zone    = document.getElementById(zoneId);
+    preview.src = e.target.result;
+    preview.style.display = 'block';
+    zone.querySelector('.upload-icon').style.display  = 'none';
+    zone.querySelector('.upload-text').textContent    = '✅ ' + file.name;
+    zone.querySelector('.upload-hint').style.display  = 'none';
+    // store dataURL on input for later use
+    input._dataURL = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ══════════════════════════════════════════
+//  ADMIN AUTH
+// ══════════════════════════════════════════
+const ADMIN_USER = 'admin';
+const ADMIN_PASS = 'explore2025';
+
+function toggleAdmin() { document.getElementById('adminOverlay').classList.toggle('open'); }
+function closeAdmin()  { document.getElementById('adminOverlay').classList.remove('open'); }
+document.getElementById('adminOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeAdmin();
+});
+function doAdminLogin() {
+  const u   = document.getElementById('adminUser').value;
+  const p   = document.getElementById('adminPass').value;
+  const msg = document.getElementById('loginMsg');
+  if (u === ADMIN_USER && p === ADMIN_PASS) {
+    document.getElementById('adminLogin').style.display = 'none';
+    document.getElementById('adminBody').classList.add('active');
+    loadAdminData();
+  } else {
+    msg.textContent = '❌ Invalid username or password';
+    msg.className   = 'admin-msg error';
+  }
+}
+function switchTab(tab, btn) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+// ══════════════════════════════════════════
+//  LOAD ADMIN DATA
+// ══════════════════════════════════════════
+function loadAdminData() {
+  loadPackageEditor();
+  loadTempleEditor();
+  loadAnniversaryEditor();
+  loadVehicleEditor();
+  loadHoneymoonEditor();
+}
+
+/* ---- build image-upload row HTML ---- */
+function imgUploadRowHTML(idx, section, currentSrc) {
+  const uid   = `${section}_${idx}`;
+  const thumb = currentSrc
+    ? `<img class="upload-preview" id="prev_${uid}" src="${currentSrc}" alt="" style="display:block;">`
+    : `<img class="upload-preview" id="prev_${uid}" src="" alt="">`;
+  const iconStyle  = currentSrc ? 'display:none' : '';
+  const textVal    = currentSrc ? '✅ Current image loaded' : 'Click to upload image';
+  const hintStyle  = currentSrc ? 'display:none' : '';
+  return `
+    <div class="upload-zone" id="zone_${uid}" onclick="document.getElementById('file_${uid}').click()">
+      <div class="upload-icon" style="${iconStyle}">📷</div>
+      <div class="upload-text">${textVal}</div>
+      <div class="upload-hint" style="${hintStyle}">JPG, PNG, WEBP • Max 5MB</div>
+      ${thumb}
+    </div>
+    <input type="file" id="file_${uid}" accept="image/*" style="display:none"
+      onchange="previewUpload(this,'prev_${uid}','zone_${uid}')">`;
+}
+
+/* ── PACKAGES ── */
+function loadPackageEditor() {
+  const cards = document.querySelectorAll('#packages .pkg-card');
+  const list  = document.getElementById('pkgEditorList');
+  list.innerHTML = '';
+  cards.forEach((card, i) => {
+    const title    = card.querySelector('.pkg-dest')?.textContent || '';
+    const badge    = card.querySelector('.pkg-badge')?.textContent || '';
+    const includes = card.querySelector('.pkg-includes')?.textContent || '';
+    const tags     = [...card.querySelectorAll('.pkg-tag')].map(t => t.textContent).join(' | ');
+    const imgEl    = card.querySelector('img');
+    const imgSrc   = imgEl ? imgEl.src : '';
+    list.innerHTML += `
+      <div class="pkg-edit-row" data-idx="${i}">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="background:var(--orange);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">Package ${i+1}</span>
+            <strong style="color:var(--navy)">${title}</strong>
+          </div>
+          <button onclick="removePackage(this)" style="background:#fee2e2;color:#991b1b;border:none;padding:5px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;">🗑️ Remove</button>
+        </div>
+        <label>Title</label><input type="text" class="pe-title" value="${title}">
+        <label>Badge</label><input type="text" class="pe-badge" value="${badge}">
+        <label>Tags (separate with |)</label><input type="text" class="pe-tags" value="${tags}">
+        <label>Highlights</label><textarea class="pe-inc">${includes}</textarea>
+        <label>Package Image</label>
+        ${imgUploadRowHTML(i, 'pkg', imgSrc)}
+      </div>`;
+  });
+}
+
+/* ── TEMPLES ── */
+function loadTempleEditor() {
+  const cards = document.querySelectorAll('#temples .temple-card');
+  const list  = document.getElementById('templeEditorList');
+  list.innerHTML = '';
+  cards.forEach((card, i) => {
+    const name   = card.querySelector('.temple-name')?.textContent || '';
+    const detail = card.querySelector('.temple-detail')?.textContent || '';
+    const imgEl  = card.querySelector('img');
+    const imgSrc = imgEl ? imgEl.src : '';
+    list.innerHTML += `
+      <div class="pkg-edit-row" data-idx="${i}">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="background:#8b5cf6;color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">Temple ${i+1}</span>
+            <strong style="color:var(--navy)">${name}</strong>
+          </div>
+          <button onclick="removeTemple(this)" style="background:#fee2e2;color:#991b1b;border:none;padding:5px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;">🗑️ Remove</button>
+        </div>
+        <label>Temple Name</label><input type="text" class="te-name" value="${name}">
+        <label>Detail / Description</label><input type="text" class="te-detail" value="${detail}">
+        <label>Temple Image</label>
+        ${imgUploadRowHTML(i, 'tpl', imgSrc)}
+      </div>`;
+  });
+}
+
+/* ── ANNIVERSARY ── */
+function loadAnniversaryEditor() {
+  // Tiers
+  const tiers  = document.querySelectorAll('#anniversary .tier');
+  const tlist  = document.getElementById('annTierList');
+  tlist.innerHTML = '';
+  tiers.forEach((tier, i) => {
+    const tname  = tier.querySelector('.t-name')?.textContent || '';
+    const tdesc  = tier.querySelector('.t-desc')?.textContent || '';
+    const feat   = tier.classList.contains('featured');
+    tlist.innerHTML += `
+      <div class="pkg-edit-row ann-tier-row" data-idx="${i}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+          <span style="font-weight:700;color:var(--navy)">Tier ${i+1}</span>
+          <button onclick="removeAnnTier(this)" style="background:#fee2e2;color:#991b1b;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">✕ Remove</button>
+        </div>
+        <label>Package Name</label><input type="text" class="at-name" value="${tname}">
+        <label>Description</label><input type="text" class="at-desc" value="${tdesc}">
+        <label style="display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" class="at-feat" ${feat?'checked':''}>
+          Mark as Featured (highlighted)
+        </label>
+      </div>`;
+  });
+
+  // Features
+  const feats = document.querySelectorAll('#anniversary .ann-feat');
+  const flist = document.getElementById('annFeatList');
+  flist.innerHTML = '';
+  feats.forEach((feat, i) => {
+    const icon  = feat.querySelector('.icon')?.textContent || '';
+    const title = feat.querySelector('.title')?.textContent || '';
+    const desc  = feat.querySelector('.desc')?.textContent || '';
+    flist.innerHTML += `
+      <div class="pkg-edit-row" data-idx="${i}" style="display:grid;grid-template-columns:60px 1fr 1fr;gap:10px;align-items:center;">
+        <div>
+          <label>Icon</label><input type="text" class="af-icon" value="${icon}" style="text-align:center;font-size:20px;">
+        </div>
+        <div>
+          <label>Title</label><input type="text" class="af-title" value="${title}">
+        </div>
+        <div>
+          <label>Description</label><input type="text" class="af-desc" value="${desc}">
+        </div>
+      </div>`;
+  });
+}
+
+/* ── VEHICLES ── */
+function loadVehicleEditor() {
+  const cards = document.querySelectorAll('#vehicles .vehicle-card');
+  const vlist = document.getElementById('vehicleEditorList');
+  vlist.innerHTML = '';
+  cards.forEach((card, i) => {
+    const name  = card.querySelector('.vehicle-name')?.textContent || '';
+    const seats = card.querySelector('.vehicle-seats')?.textContent || '';
+    const ac    = card.querySelector('.vehicle-ac')?.textContent || '';
+    const price = card.querySelector('.vehicle-price')?.textContent || '';
+    const icon  = card.querySelector('.vehicle-icon')?.textContent || '🚌';
+    const imgEl = card.querySelector('.vehicle-photo');
+    const imgSrc = imgEl ? imgEl.src : '';
+    const zoneId = `vehZone_${i}`;
+    const prevId = `vehPrev_${i}`;
+    const fileId = `vehFile_${i}`;
+    vlist.innerHTML += `
+      <div class="pkg-edit-row" data-idx="${i}">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="background:var(--orange);color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">Vehicle ${i+1}</span>
+            <strong style="color:var(--navy)">${name}</strong>
+          </div>
+          <button onclick="removeVehicle(this)" style="background:#fee2e2;color:#991b1b;border:none;padding:5px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;">🗑️ Remove</button>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div><label>Vehicle Name</label><input type="text" class="ve-name" value="${name}"></div>
+          <div><label>Icon (emoji)</label><input type="text" class="ve-icon" value="${icon}" style="font-size:20px;text-align:center;"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div><label>Seats / Capacity</label><input type="text" class="ve-seats" value="${seats}" placeholder="e.g. 12 Seater"></div>
+          <div><label>AC Info</label><input type="text" class="ve-ac" value="${ac}" placeholder="e.g. ✅ AC Available"></div>
+        </div>
+        <label>Price / Rate</label><input type="text" class="ve-price" value="${price}" placeholder="e.g. ₹15/km onwards">
+        <label>Vehicle Photo</label>
+        <div class="upload-zone" id="${zoneId}" onclick="document.getElementById('${fileId}').click()">
+          ${imgSrc ? `<img src="${imgSrc}" style="width:100%;max-height:130px;object-fit:cover;border-radius:8px;">` : `<div class="upload-icon">🚌</div><div class="upload-text">Click to upload vehicle photo</div><div class="upload-hint">JPG, PNG, WEBP • Max 5MB</div>`}
+          <img class="upload-preview" id="${prevId}" src="" alt="" style="display:none;">
+        </div>
+        <input type="file" id="${fileId}" accept="image/*" style="display:none" onchange="previewUpload(this,'${prevId}','${zoneId}')">
+      </div>`;
+  });
+  // Add Vehicle button
+  vlist.innerHTML += `
+    <div style="margin-top:8px;">
+      <button class="admin-add-btn" onclick="addNewVehicle()">➕ Add New Vehicle</button>
+    </div>`;
+}
+
+// ══════════════════════════════════════════
+//  SAVE FUNCTIONS
+// ══════════════════════════════════════════
+
+/* ── Save Packages ── */
+function savePackages() {
+  const cards = document.querySelectorAll('#packages .pkg-card');
+  document.querySelectorAll('#pkgEditorList .pkg-edit-row').forEach((row, i) => {
+    const card = cards[i]; if (!card) return;
+    const title  = row.querySelector('.pe-title').value;
+    const badge  = row.querySelector('.pe-badge').value;
+    const tags   = row.querySelector('.pe-tags').value.split('|').map(t=>t.trim());
+    const inc    = row.querySelector('.pe-inc').value;
+    const fileEl = row.querySelector('input[type="file"]');
+    if (card.querySelector('.pkg-dest'))   card.querySelector('.pkg-dest').textContent = title;
+    if (card.querySelector('.pkg-badge'))  card.querySelector('.pkg-badge').textContent = badge;
+    if (card.querySelector('.pkg-includes')) card.querySelector('.pkg-includes').textContent = inc;
+    card.querySelectorAll('.pkg-tag').forEach((t, ti) => { if(tags[ti]) t.textContent = tags[ti]; });
+    // Apply uploaded image
+    if (fileEl && fileEl._dataURL) {
+      let imgEl = card.querySelector('img');
+      if (!imgEl) {
+        imgEl = document.createElement('img');
+        imgEl.style.cssText = 'width:100%;height:100%;object-fit:cover;transition:transform .4s;';
+        imgEl.alt = title;
+        card.querySelector('.pkg-img').prepend(imgEl);
+      }
+      imgEl.src = fileEl._dataURL;
+    }
+  });
+  showMsg('pkgMsg', '✅ Package changes applied successfully!', 'success');
+}
+
+/* ── Save Temples ── */
+function saveTemples() {
+  const cards = document.querySelectorAll('#temples .temple-card');
+  document.querySelectorAll('#templeEditorList .pkg-edit-row').forEach((row, i) => {
+    const card = cards[i]; if (!card) return;
+    const name   = row.querySelector('.te-name').value;
+    const detail = row.querySelector('.te-detail').value;
+    const fileEl = row.querySelector('input[type="file"]');
+    if (card.querySelector('.temple-name'))   card.querySelector('.temple-name').textContent = name;
+    if (card.querySelector('.temple-detail')) card.querySelector('.temple-detail').textContent = detail;
+    // Apply uploaded image
+    if (fileEl && fileEl._dataURL) {
+      let imgEl = card.querySelector('img');
+      if (!imgEl) {
+        imgEl = document.createElement('img');
+        imgEl.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0;';
+        imgEl.alt = name;
+        card.querySelector('.temple-img').style.position = 'relative';
+        card.querySelector('.temple-img').prepend(imgEl);
+      }
+      imgEl.src = fileEl._dataURL;
+      card.querySelector('.temple-img').style.fontSize = '0';
+    }
+  });
+  showMsg('templeMsg', '✅ Temple tours updated successfully!', 'success');
+}
+
+/* ── Save Anniversary ── */
+function saveAnniversary() {
+  // Update title & sub
+  const secTitle = document.querySelector('#anniversary .sec-title');
+  if (secTitle) secTitle.innerHTML = document.getElementById('annTitle').value.replace('Anniversary','<span style="color:var(--gold)">Anniversary</span>');
+  const secSub = document.querySelector('#anniversary .sec-sub');
+  if (secSub) secSub.textContent = document.getElementById('annSub').value;
+  const destEl = document.querySelector('#anniversary p strong');
+  if (destEl) destEl.textContent = document.getElementById('annDest').value;
+
+  // Update tiers
+  const tierEls = document.querySelectorAll('#anniversary .tier');
+  document.querySelectorAll('#annTierList .ann-tier-row').forEach((row, i) => {
+    const tier = tierEls[i]; if (!tier) return;
+    if (tier.querySelector('.t-name')) tier.querySelector('.t-name').textContent = row.querySelector('.at-name').value;
+    if (tier.querySelector('.t-desc')) tier.querySelector('.t-desc').textContent = row.querySelector('.at-desc').value;
+    const feat = row.querySelector('.at-feat').checked;
+    tier.classList.toggle('featured', feat);
+  });
+
+  // Update features
+  const featEls = document.querySelectorAll('#anniversary .ann-feat');
+  document.querySelectorAll('#annFeatList .pkg-edit-row').forEach((row, i) => {
+    const feat = featEls[i]; if (!feat) return;
+    if (feat.querySelector('.icon'))  feat.querySelector('.icon').textContent  = row.querySelector('.af-icon').value;
+    if (feat.querySelector('.title')) feat.querySelector('.title').textContent = row.querySelector('.af-title').value;
+    if (feat.querySelector('.desc'))  feat.querySelector('.desc').textContent  = row.querySelector('.af-desc').value;
+  });
+  showMsg('annMsg', '✅ Anniversary section updated!', 'success');
+}
+
+/* ── Save Vehicles ── */
+function saveVehicles() {
+  const cards = document.querySelectorAll('#vehicles .vehicle-card');
+  document.querySelectorAll('#vehicleEditorList .pkg-edit-row[data-idx]').forEach((row, i) => {
+    const card = cards[i]; if (!card) return;
+    const nameVal  = row.querySelector('.ve-name')?.value || '';
+    const seatsVal = row.querySelector('.ve-seats')?.value || '';
+    const acVal    = row.querySelector('.ve-ac')?.value || '';
+    const priceVal = row.querySelector('.ve-price')?.value || '';
+    const iconVal  = row.querySelector('.ve-icon')?.value || '';
+    if (card.querySelector('.vehicle-name'))  card.querySelector('.vehicle-name').textContent  = nameVal;
+    if (card.querySelector('.vehicle-seats')) card.querySelector('.vehicle-seats').textContent = seatsVal;
+    if (card.querySelector('.vehicle-ac'))    card.querySelector('.vehicle-ac').textContent    = acVal;
+    if (card.querySelector('.vehicle-icon'))  card.querySelector('.vehicle-icon').textContent  = iconVal;
+    // Price
+    let priceEl = card.querySelector('.vehicle-price');
+    if (!priceEl && priceVal) {
+      priceEl = document.createElement('div');
+      priceEl.className = 'vehicle-price';
+      card.querySelector('.vehicle-body').insertBefore(priceEl, card.querySelector('.btn-call'));
+    }
+    if (priceEl) priceEl.textContent = priceVal;
+    // Photo
+    const fileEl = row.querySelector('input[type="file"]');
+    if (fileEl && fileEl._dataURL) {
+      let photoEl = card.querySelector('.vehicle-photo');
+      const iconEl = card.querySelector('.vehicle-icon');
+      if (!photoEl) {
+        photoEl = document.createElement('img');
+        photoEl.className = 'vehicle-photo';
+        photoEl.style.cssText = 'width:100%;height:160px;object-fit:cover;display:block;';
+        photoEl.alt = nameVal;
+        if (iconEl) { iconEl.style.display = 'none'; card.insertBefore(photoEl, card.firstChild); }
+      }
+      photoEl.src = fileEl._dataURL;
+    }
+  });
+  showMsg('vehMsg', '✅ Vehicle changes saved!', 'success');
+}
+
+function addNewVehicle() {
+  const grid = document.querySelector('#vehicles .vehicles-grid');
+  const card = document.createElement('div');
+  card.className = 'vehicle-card reveal visible';
+  card.innerHTML = `
+    <div class="vehicle-icon">🚗</div>
+    <div class="vehicle-body">
+      <div class="vehicle-name">New Vehicle</div>
+      <div class="vehicle-seats">Seater info</div>
+      <div class="vehicle-ac">✅ AC Available</div>
+      <div class="vehicle-price"></div>
+      <a href="tel:8056444576" class="btn-call">📞 Call Now</a>
+    </div>`;
+  grid.appendChild(card);
+  showMsg('vehMsg', '✅ New vehicle added! Edit its details above and save.', 'success');
+  loadVehicleEditor();
+}
+
+/* ── Save Contact ── */
+function saveContact() {
+  const phone = document.getElementById('adPhone').value;
+  const email = document.getElementById('adEmail').value;
+  const wa    = document.getElementById('adWA').value;
+  document.querySelectorAll('a[href^="tel:"]').forEach(a => { a.href = 'tel:' + phone; a.textContent = phone; });
+  document.querySelectorAll('a[href^="mailto:"]').forEach(a => { a.href = 'mailto:' + email; a.textContent = email; });
+  document.querySelectorAll('a[href^="https://wa.me/"]').forEach(a => { a.href = 'https://wa.me/' + wa; });
+  showMsg('contactMsg', '✅ Contact details updated!', 'success');
+}
+
+// ══════════════════════════════════════════
+//  ADD NEW ITEMS
+// ══════════════════════════════════════════
+
+function addNewPackage() {
+  const title  = document.getElementById('newPkgTitle').value.trim();
+  const badge  = document.getElementById('newPkgBadge').value.trim() || 'New';
+  const dur    = document.getElementById('newPkgDur').value.trim();
+  const cat    = document.getElementById('newPkgCat').value.trim();
+  const inc    = document.getElementById('newPkgInc').value.trim();
+  const fileEl = document.getElementById('newPkgFile');
+  const imgSrc = fileEl._dataURL || '';
+  const msg = document.getElementById('addpkgMsg');
+  if (!title) { showMsg('addpkgMsg','⚠️ Please enter a destination title','error'); return; }
+  const grid = document.querySelector('#packages .packages-grid');
+  const card = document.createElement('div');
+  card.className = 'pkg-card reveal visible';
+  card.innerHTML = `
+    <div class="pkg-img">
+      ${imgSrc
+        ? `<img src="${imgSrc}" alt="${title}" style="width:100%;height:100%;object-fit:cover;transition:transform .4s;">`
+        : `<div class="pkg-img-bg bg1" style="display:flex;align-items:center;justify-content:center;font-size:60px;">🌍</div>`}
+      <div class="pkg-badge">${badge}</div>
+    </div>
+    <div class="pkg-body">
+      <div class="pkg-dest">${title}</div>
+      <div class="pkg-meta">
+        ${dur ? `<span class="pkg-tag">${dur}</span>` : ''}
+        ${cat ? `<span class="pkg-tag">${cat}</span>` : ''}
+      </div>
+      <div class="pkg-includes">${inc}</div>
+      <div class="pkg-footer">
+        <button class="btn-book" onclick="bookPackage('${title}')">Book Now</button>
+      </div>
+    </div>`;
+  grid.appendChild(card);
+  ['newPkgTitle','newPkgBadge','newPkgDur','newPkgCat','newPkgInc'].forEach(id => document.getElementById(id).value='');
+  fileEl._dataURL = null; fileEl.value='';
+  const prev = document.getElementById('newPkgPreview');
+  prev.src=''; prev.style.display='none';
+  const zone = document.getElementById('newPkgUploadZone');
+  zone.querySelector('.upload-icon').style.display='';
+  zone.querySelector('.upload-text').textContent='Click to upload image';
+  zone.querySelector('.upload-hint').style.display='';
+  showMsg('addpkgMsg', `✅ "${title}" added to Tour Packages!`, 'success');
+  loadPackageEditor();
+}
+
+function addNewTemple() {
+  const name   = document.getElementById('newTplName').value.trim();
+  const detail = document.getElementById('newTplDetail').value.trim();
+  const fileEl = document.getElementById('newTplFile');
+  const imgSrc = fileEl._dataURL || '';
+  if (!name) { showMsg('addtplMsg','⚠️ Please enter the temple name','error'); return; }
+  const grid = document.querySelector('#temples .temples-grid');
+  const card = document.createElement('div');
+  card.className = 'temple-card reveal visible';
+  // pick a random bg gradient
+  const bgs = ['bg1','bg2','bg3','bg4','bg5','bg6','bg7'];
+  const bg  = bgs[Math.floor(Math.random()*bgs.length)];
+  card.innerHTML = `
+    <div class="temple-img ${bg}" style="${imgSrc?'font-size:0;position:relative;':''}">${imgSrc?'':`🛕`}
+      ${imgSrc?`<img src="${imgSrc}" alt="${name}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">`:''}
+    </div>
+    <div class="temple-overlay">
+      <div class="temple-name">${name}</div>
+      <div class="temple-detail">${detail}</div>
+    </div>`;
+  grid.appendChild(card);
+  ['newTplName','newTplDetail'].forEach(id => document.getElementById(id).value='');
+  fileEl._dataURL = null; fileEl.value='';
+  const prev = document.getElementById('newTplPreview');
+  prev.src=''; prev.style.display='none';
+  const zone = document.getElementById('newTplUploadZone');
+  zone.querySelector('.upload-icon').style.display='';
+  zone.querySelector('.upload-text').textContent='Click to upload temple image';
+  zone.querySelector('.upload-hint').style.display='';
+  showMsg('addtplMsg', `✅ "${name}" added to Temple Tours!`, 'success');
+  loadTempleEditor();
+}
+
+function addAnnTier() {
+  const list = document.getElementById('annTierList');
+  const idx  = list.querySelectorAll('.ann-tier-row').length;
+  const div  = document.createElement('div');
+  div.className = 'pkg-edit-row ann-tier-row';
+  div.dataset.idx = idx;
+  div.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+      <span style="font-weight:700;color:var(--navy)">New Tier</span>
+      <button onclick="removeAnnTier(this)" style="background:#fee2e2;color:#991b1b;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;">✕ Remove</button>
+    </div>
+    <label>Package Name</label><input type="text" class="at-name" placeholder="e.g. Diamond Package">
+    <label>Description</label><input type="text" class="at-desc" placeholder="e.g. Full service + extra night">
+    <label style="display:flex;align-items:center;gap:8px;">
+      <input type="checkbox" class="at-feat"> Mark as Featured
+    </label>`;
+  list.appendChild(div);
+  // Also add a new tier to the actual section
+  const tiersContainer = document.querySelector('#anniversary .pkg-tiers');
+  const newTier = document.createElement('div');
+  newTier.className = 'tier';
+  newTier.innerHTML = `
+    <div>
+      <div class="t-name">New Package</div>
+      <div class="t-desc">Custom package</div>
+    </div>
+    <div><button class="btn-book" style="margin-top:8px" onclick="bookPackage('60th Anniversary - New Package')">Book</button></div>`;
+  const waBtn = tiersContainer.querySelector('.btn-wa');
+  tiersContainer.insertBefore(newTier, waBtn);
+}
+
+function removeAnnTier(btn) {
+  btn.closest('.ann-tier-row').remove();
+}
+
+function removePackage(btn) {
+  const row = btn.closest('.pkg-edit-row');
+  const idx = parseInt(row.dataset.idx);
+  const cards = document.querySelectorAll('#packages .pkg-card');
+  const title = row.querySelector('.pe-title')?.value || 'this package';
+  if (confirm(`Remove "${title}" from the website?`)) {
+    if (cards[idx]) cards[idx].remove();
+    showMsg('pkgMsg', `✅ "${title}" removed successfully!`, 'success');
+    loadPackageEditor();
+  }
+}
+
+function removeTemple(btn) {
+  const row = btn.closest('.pkg-edit-row');
+  const idx = parseInt(row.dataset.idx);
+  const cards = document.querySelectorAll('#temples .temple-card');
+  const name = row.querySelector('.te-name')?.value || 'this temple';
+  if (confirm(`Remove "${name}" from Temple Tours?`)) {
+    if (cards[idx]) cards[idx].remove();
+    showMsg('templeMsg', `✅ "${name}" removed successfully!`, 'success');
+    loadTempleEditor();
+  }
+}
+
+function removeVehicle(btn) {
+  const row = btn.closest('.pkg-edit-row');
+  const idx = parseInt(row.dataset.idx);
+  const cards = document.querySelectorAll('#vehicles .vehicle-card');
+  const name = row.querySelector('.ve-name')?.value || 'this vehicle';
+  if (confirm(`Remove "${name}" from Vehicle Rental?`)) {
+    if (cards[idx]) cards[idx].remove();
+    showMsg('vehMsg', `✅ "${name}" removed successfully!`, 'success');
+    loadVehicleEditor();
+  }
+}
+
+// ══════════════════════════════════════════
+//  HONEYMOON ADMIN — LOAD / SAVE / ADD / DELETE
+// ══════════════════════════════════════════
+
+/* ── Load existing honeymoon cards into the editor ── */
+function loadHoneymoonEditor() {
+  const cards = document.querySelectorAll('#honeymoon .honey-card');
+  const list  = document.getElementById('honeyEditorList');
+  if (!list) return;
+  list.innerHTML = '';
+
+  if (cards.length === 0) {
+    list.innerHTML = '<p style="color:var(--muted);font-size:13px;padding:12px 0;">No honeymoon packages yet. Add one below.</p>';
+    return;
+  }
+
+  cards.forEach((card, i) => {
+    const name     = card.querySelector('.honey-name')?.textContent.trim()    || '';
+    const badge    = card.querySelector('.couple-badge')?.textContent.trim()  || '';
+    const duration = card.querySelector('.honey-duration')?.textContent.trim()|| '';
+    const feats    = [...card.querySelectorAll('.hf')].map(f => f.textContent.trim());
+    const imgEl    = card.querySelector('.honey-img img');
+    const imgSrc   = imgEl ? imgEl.src : '';
+    const zId = `hzone_${i}`, pId = `hprev_${i}`, fId = `hfile_${i}`;
+
+    list.innerHTML += `
+      <div class="pkg-edit-row" data-idx="${i}" style="border-left:3px solid #ec4899;padding-left:18px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="background:#ec4899;color:#fff;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;">💑 Card ${i+1}</span>
+            <strong style="color:var(--navy);font-size:15px;">${name || 'Unnamed'}</strong>
+          </div>
+          <button onclick="deleteHoneymoonCard(this)"
+            style="background:#fee2e2;color:#991b1b;border:none;padding:6px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;">
+            🗑️ Delete
+          </button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div><label>Destination Name</label><input type="text" class="hc-name" value="${name}"></div>
+          <div><label>Badge</label><input type="text" class="hc-badge" value="${badge}"></div>
+        </div>
+        <div><label>Duration (optional)</label><input type="text" class="hc-duration" value="${duration}" placeholder="e.g. 3 Days / 2 Nights"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;">
+          <div><label>Feature 1</label><input type="text" class="hc-f1" value="${feats[0]||''}" placeholder="🌹 Candle Dinner"></div>
+          <div><label>Feature 2</label><input type="text" class="hc-f2" value="${feats[1]||''}" placeholder="🌸 Flower Decor"></div>
+          <div><label>Feature 3</label><input type="text" class="hc-f3" value="${feats[2]||''}" placeholder="📸 Photography"></div>
+        </div>
+        <label>Card Image</label>
+        <div class="upload-zone" id="${zId}" onclick="document.getElementById('${fId}').click()">
+          <div class="upload-icon" ${imgSrc?'style="display:none"':''}>📷</div>
+          <div class="upload-text">${imgSrc ? '✅ Current image loaded' : 'Click to upload new image'}</div>
+          <div class="upload-hint" ${imgSrc?'style="display:none"':''}>JPG, PNG, WEBP • Max 5MB</div>
+          <img id="${pId}" src="${imgSrc}" alt=""
+            style="width:100%;max-height:130px;object-fit:cover;border-radius:8px;${imgSrc?'':'display:none;'}">
+        </div>
+        <input type="file" id="${fId}" accept="image/*" style="display:none"
+          onchange="previewUpload(this,'${pId}','${zId}')">
+      </div>`;
+  });
+}
+
+/* ── Apply edits to all existing honeymoon cards ── */
+function saveHoneymoon() {
+  const cards = document.querySelectorAll('#honeymoon .honey-card');
+  const rows  = document.querySelectorAll('#honeyEditorList .pkg-edit-row[data-idx]');
+
+  rows.forEach((row, i) => {
+    const card = cards[i]; if (!card) return;
+
+    const name     = row.querySelector('.hc-name')?.value     || '';
+    const badge    = row.querySelector('.hc-badge')?.value    || '';
+    const duration = row.querySelector('.hc-duration')?.value || '';
+    const f1 = row.querySelector('.hc-f1')?.value || '';
+    const f2 = row.querySelector('.hc-f2')?.value || '';
+    const f3 = row.querySelector('.hc-f3')?.value || '';
+    const fileEl = row.querySelector('input[type="file"]');
+
+    // Update text fields
+    if (card.querySelector('.honey-name'))   card.querySelector('.honey-name').textContent   = name;
+    if (card.querySelector('.couple-badge')) card.querySelector('.couple-badge').textContent = badge;
+
+    // Duration element
+    let durEl = card.querySelector('.honey-duration');
+    if (duration) {
+      if (!durEl) {
+        durEl = document.createElement('div');
+        durEl.className = 'honey-duration';
+        durEl.style.cssText = 'font-size:12px;color:var(--muted);margin-bottom:8px;';
+        card.querySelector('.honey-name').after(durEl);
+      }
+      durEl.textContent = duration;
+    } else if (durEl) { durEl.textContent = ''; }
+
+    // Features — rebuild
+    const featContainer = card.querySelector('.honey-features');
+    if (featContainer) {
+      featContainer.innerHTML = [f1,f2,f3]
+        .filter(Boolean)
+        .map(f => `<span class="hf">${f}</span>`)
+        .join('');
+    }
+
+    // Book button text
+    const btn = card.querySelector('.btn-book');
+    if (btn) btn.setAttribute('onclick', `bookPackage('${name} Honeymoon Package','')`);
+
+    // Image upload
+    if (fileEl && fileEl._dataURL) {
+      const imgDiv = card.querySelector('.honey-img');
+      let imgEl = imgDiv.querySelector('img');
+      if (!imgEl) {
+        imgEl = document.createElement('img');
+        imgEl.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+        imgDiv.style.position = 'relative';
+        imgDiv.style.fontSize = '0';
+        imgDiv.insertBefore(imgEl, imgDiv.firstChild);
+      }
+      imgEl.src = fileEl._dataURL;
+    }
+  });
+
+  showMsg('honeyMsg', '✅ Honeymoon packages updated successfully!', 'success');
+  loadHoneymoonEditor();
+}
+
+/* ── Delete a honeymoon card ── */
+function deleteHoneymoonCard(btn) {
+  const row  = btn.closest('.pkg-edit-row');
+  const idx  = parseInt(row.dataset.idx);
+  const name = row.querySelector('.hc-name')?.value || 'this package';
+  const cards = document.querySelectorAll('#honeymoon .honey-card');
+
+  if (confirm(`Delete "${name}" from the Honeymoon section?\nThis cannot be undone.`)) {
+    if (cards[idx]) cards[idx].remove();
+    showMsg('honeyMsg', `✅ "${name}" deleted successfully!`, 'success');
+    loadHoneymoonEditor();
+  }
+}
+
+/* ── Add a brand-new honeymoon card ── */
+function addHoneymoonCard() {
+  const name     = document.getElementById('nh_name').value.trim();
+  const badge    = document.getElementById('nh_badge').value.trim()    || 'Couple Special';
+  const duration = document.getElementById('nh_duration').value.trim() || '';
+  const f1       = document.getElementById('nh_f1').value.trim();
+  const f2       = document.getElementById('nh_f2').value.trim();
+  const f3       = document.getElementById('nh_f3').value.trim();
+  const fileEl   = document.getElementById('nh_file');
+  const imgSrc   = fileEl._dataURL || '';
+
+  if (!name) { showMsg('honeyAddMsg','⚠️ Please enter a destination name','error'); return; }
+
+  const bgs = ['bg1','bg2','bg3','bg4','bg5','bg6','bg7'];
+  const bg  = bgs[Math.floor(Math.random() * bgs.length)];
+
+  const featsHTML = [f1,f2,f3]
+    .filter(Boolean)
+    .map(f => `<span class="hf">${f}</span>`)
+    .join('');
+
+  const durHTML = duration
+    ? `<div class="honey-duration" style="font-size:12px;color:var(--muted);margin-bottom:8px;">⏱ ${duration}</div>`
+    : '';
+
+  const imgHTML = imgSrc
+    ? `<img src="${imgSrc}" alt="${name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">`
+    : '';
+
+  const grid = document.querySelector('#honeymoon .honey-grid');
+  const card = document.createElement('div');
+  card.className = 'honey-card reveal visible';
+  card.innerHTML = `
+    <div class="honey-img ${bg}" style="${imgSrc ? 'font-size:0;position:relative;' : ''}">
+      ${imgSrc ? '' : '💑'}
+      ${imgHTML}
+      <div class="couple-badge">${badge}</div>
+    </div>
+    <div class="honey-body">
+      <div class="honey-name">${name}</div>
+      ${durHTML}
+      <div class="honey-features">${featsHTML}</div>
+      <button class="btn-book" style="margin-top:12px" onclick="bookPackage('${name} Honeymoon Package','')">Book Now</button>
+    </div>`;
+
+  grid.appendChild(card);
+
+  // Reset form
+  ['nh_name','nh_badge','nh_duration','nh_f1','nh_f2','nh_f3'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  fileEl._dataURL = null; fileEl.value = '';
+  const prev = document.getElementById('nh_preview');
+  prev.src = ''; prev.style.display = 'none';
+  const zone = document.getElementById('nh_zone');
+  zone.querySelector('.upload-icon').style.display = '';
+  zone.querySelector('.upload-text').textContent   = 'Click to upload image';
+  zone.querySelector('.upload-hint').style.display = '';
+
+  showMsg('honeyAddMsg', `✅ "${name}" added to Honeymoon section!`, 'success');
+  loadHoneymoonEditor();
+}
+
+// ── Utility ──
+function showMsg(id, text, type) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className   = 'admin-msg ' + type;
+  setTimeout(() => el.className = 'admin-msg', 4000);
+}
+</script>
+</body>
+</html>
